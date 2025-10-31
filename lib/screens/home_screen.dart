@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_feather_icons/flutter_feather_icons.dart';
-import '../widgets/wallpaper_grid.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -8,137 +7,264 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Row(
+      backgroundColor: Colors.white,
+      appBar: _buildAppBar(),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 32),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildHeroSection(),
+            const SizedBox(height: 48),
+            _buildCategoriesSection(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  PreferredSizeWidget _buildAppBar() {
+    return AppBar(
+      backgroundColor: Colors.white,
+      elevation: 0,
+      title: Row(
         children: [
-          _Sidebar(currentRoute: '/'),
-          Expanded(
-            child: Column(
-              children: [
-                _Header(title: 'All Wallpapers'),
-                const Expanded(child: WallpaperGrid()),
-              ],
+          Image.asset(
+            'assets/logo.png', // You'll need to add this logo
+            width: 24,
+            height: 24,
+            color: const Color(0xFFE91E63),
+          ),
+          const SizedBox(width: 8),
+          Text(
+            'Wallpaper Studio',
+            style: GoogleFonts.inter(
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+              color: Colors.black,
             ),
           ),
         ],
       ),
+      actions: [
+        _navItem('Home', isActive: true),
+        _navItem('Browse'),
+        _navItem('Favourites'),
+        _navItem('Settings'),
+        const SizedBox(width: 40),
+      ],
     );
   }
-}
 
-// ────────────────────────────────── SIDEBAR ──────────────────────────────────
-class _Sidebar extends StatelessWidget {
-  final String currentRoute;
-  const _Sidebar({required this.currentRoute});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 240,
-      color: const Color(0xFF1A1A1A),
-      child: Column(
-        children: [
-          const SizedBox(height: 64),
-          _SidebarItem(
-            icon: FeatherIcons.home,
-            label: 'Home',
-            route: '/',
-            isActive: currentRoute == '/',
-            onTap: () => Navigator.pushReplacementNamed(context, '/'),
-          ),
-          _SidebarItem(
-            icon: FeatherIcons.grid,
-            label: 'Categories',
-            route: '/category',
-            isActive: currentRoute == '/category',
-            onTap: () => Navigator.pushReplacementNamed(context, '/category'),
-          ),
-          _SidebarItem(
-            icon: FeatherIcons.heart,
-            label: 'Favorites',
-            route: '/favorites',
-            isActive: currentRoute == '/favorites',
-            onTap: () => Navigator.pushReplacementNamed(context, '/favorites'),
-          ),
-          const Spacer(),
-          Padding(
-            padding: const EdgeInsets.all(24),
-            child: Text(
-              '© 2025 Wallpaper Selector',
-              style: TextStyle(color: Colors.grey[600], fontSize: 12),
-            ),
-          ),
-        ],
+  Widget _navItem(String text, {bool isActive = false}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Text(
+        text,
+        style: GoogleFonts.inter(
+          fontSize: 14,
+          fontWeight: isActive ? FontWeight.w600 : FontWeight.w400,
+          color: isActive ? Colors.black : const Color(0xFF757575),
+        ),
       ),
     );
   }
-}
 
-class _SidebarItem extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final String route;
-  final bool isActive;
-  final VoidCallback onTap;
-
-  const _SidebarItem({
-    required this.icon,
-    required this.label,
-    required this.route,
-    required this.isActive,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      leading: Icon(icon,
-          color: isActive ? const Color(0xFF00C853) : Colors.white, size: 20),
-      title: Text(label,
-          style: TextStyle(
-              color: isActive ? const Color(0xFF00C853) : Colors.white,
-              fontSize: 14)),
-      selected: isActive,
-      selectedTileColor: const Color(0xFF2A2A2A),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-      onTap: onTap,
-      contentPadding: const EdgeInsets.symmetric(horizontal: 24),
+  Widget _buildHeroSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Discover Beautiful Wallpapers',
+          style: GoogleFonts.inter(
+            fontSize: 48,
+            fontWeight: FontWeight.bold,
+            height: 1.1,
+            letterSpacing: -0.5,
+            foreground: Paint()
+              ..shader = const LinearGradient(
+                colors: [Color(0xFFFFD54F), Color(0xFFE91E63)],
+              ).createShader(const Rect.fromLTWH(0, 0, 300, 70)),
+          ),
+        ),
+        const SizedBox(height: 16),
+        Text(
+          'Discover curated collections of stunning wallpapers. Browse by\ncategory, preview in full-screen, and set your favorites.',
+          style: GoogleFonts.inter(
+            fontSize: 16,
+            color: const Color(0xFF616161),
+            height: 1.6,
+          ),
+        ),
+      ],
     );
   }
-}
 
-// ────────────────────────────────── HEADER ──────────────────────────────────
-class _Header extends StatelessWidget {
-  final String title;
-  const _Header({required this.title});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 64,
-      padding: const EdgeInsets.symmetric(horizontal: 32),
-      child: Row(
-        children: [
-          Text(title,
-              style:
-                  const TextStyle(fontSize: 20, fontWeight: FontWeight.w600)),
-          const Spacer(),
-          SizedBox(
-            width: 320,
-            height: 40,
-            child: TextField(
-              decoration: InputDecoration(
-                hintText: 'Search wallpapers...',
-                hintStyle:
-                    const TextStyle(color: Color(0xFFB3B3B3), fontSize: 14),
-                prefixIcon:
-                    const Icon(FeatherIcons.search, color: Color(0xFFB3B3B3), size: 18),
-                filled: true,
-                fillColor: const Color(0xFF2A2A2A),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20),
-                  borderSide: BorderSide.none,
+  Widget _buildCategoriesSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'Categories',
+              style: GoogleFonts.inter(
+                fontSize: 28,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+              ),
+            ),
+            TextButton(
+              onPressed: () {},
+              child: Text(
+                'See All',
+                style: GoogleFonts.inter(
+                  fontSize: 16,
+                  color: const Color(0xFF757575),
+                  decoration: TextDecoration.underline,
                 ),
               ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 24),
+        Wrap(
+          spacing: 24,
+          runSpacing: 32,
+          children: [
+            _categoryCard(
+              title: 'Nature',
+              subtitle: 'Mountains, forest and landscapes',
+              count: 3,
+              image: 'https://picsum.photos/seed/nature/600/400',
+              gradient: const LinearGradient(
+                colors: [Color(0xFF4CAF50), Color(0xFF8BC34A)],
+              ),
+            ),
+            _categoryCard(
+              title: 'Abstract',
+              subtitle: 'Modern Geometric and artistic designs',
+              count: 4,
+              image: 'https://picsum.photos/seed/abstract/600/400',
+              gradient: const LinearGradient(
+                colors: [Color(0xFF9C27B0), Color(0xFFE91E63)],
+              ),
+            ),
+            _categoryCard(
+              title: 'Urban',
+              subtitle: 'Cities, architecture and street',
+              count: 6,
+              image: 'https://picsum.photos/seed/urban/600/400',
+              gradient: const LinearGradient(
+                colors: [Color(0xFF607D8B), Color(0xFF455A64)],
+              ),
+            ),
+            _categoryCard(
+              title: 'Space',
+              subtitle: 'Cosmos, planets, and galaxies',
+              count: 3,
+              image: 'https://picsum.photos/seed/space/600/400',
+              gradient: const LinearGradient(
+                colors: [Color(0xFF1A237E), Color(0xFF3949AB)],
+              ),
+            ),
+            _categoryCard(
+              title: 'Minimalist',
+              subtitle: 'Clean, simple, and elegant',
+              count: 6,
+              image: 'https://picsum.photos/seed/minimal/600/400',
+              gradient: const LinearGradient(
+                colors: [Color(0xFFBCAAA4), Color(0xFF8D6E63)],
+              ),
+            ),
+            _categoryCard(
+              title: 'Animals',
+              subtitle: 'Wildlife and nature photography',
+              count: 4,
+              image: 'https://picsum.photos/seed/animals/600/400',
+              gradient: const LinearGradient(
+                colors: [Color(0xFFFF9800), Color(0xFFFF5722)],
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _categoryCard({
+    required String title,
+    required String subtitle,
+    required int count,
+    required String image,
+    required Gradient gradient,
+  }) {
+    return SizedBox(
+      width: 320,
+      height: 200,
+      child: Stack(
+        children: [
+          // Background Image
+          Positioned.fill(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(20),
+              child: Image.network(
+                image,
+                fit: BoxFit.cover,
+                color: const Color(0x80000000),
+                colorBlendMode: BlendMode.darken,
+              ),
+            ),
+          ),
+          // Gradient Overlay
+          Positioned.fill(
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                gradient: gradient,
+              ),
+            ),
+          ),
+          // Content
+          Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: GoogleFonts.inter(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  subtitle,
+                  style: GoogleFonts.inter(
+                    fontSize: 14,
+                    color: Colors.white.withOpacity(0.9),
+                  ),
+                ),
+                const Spacer(),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.3),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Text(
+                    '$count wallpapers',
+                    style: GoogleFonts.inter(
+                      fontSize: 12,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ],
