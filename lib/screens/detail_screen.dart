@@ -7,7 +7,8 @@ class DetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final String imageUrl = ModalRoute.of(context)!.settings.arguments as String;
+    final String imageUrl =
+        ModalRoute.of(context)!.settings.arguments as String;
 
     return Scaffold(
       body: Stack(
@@ -20,7 +21,7 @@ class DetailScreen extends StatelessWidget {
               ),
             ),
           ),
-          _TopBar(),
+          const _TopBar(),
           _BottomActions(imageUrl: imageUrl),
         ],
       ),
@@ -29,6 +30,8 @@ class DetailScreen extends StatelessWidget {
 }
 
 class _TopBar extends StatelessWidget {
+  const _TopBar();
+
   @override
   Widget build(BuildContext context) {
     return Positioned(
@@ -46,9 +49,13 @@ class _TopBar extends StatelessWidget {
               onPressed: () => Navigator.pop(context),
             ),
             const Spacer(),
-            IconButton(icon: const Icon(FeatherIcons.download, color: Colors.white), onPressed: () {}),
+            IconButton(
+                icon: const Icon(FeatherIcons.download, color: Colors.white),
+                onPressed: () {}),
             const SizedBox(width: 16),
-            IconButton(icon: const Icon(FeatherIcons.share2, color: Colors.white), onPressed: () {}),
+            IconButton(
+                icon: const Icon(FeatherIcons.share2, color: Colors.white),
+                onPressed: () {}),
           ],
         ),
       ),
@@ -79,8 +86,10 @@ class _BottomActions extends StatelessWidget {
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF00C853),
                 foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8)),
               ),
             ),
             const Spacer(),
@@ -91,8 +100,10 @@ class _BottomActions extends StatelessWidget {
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.white,
                 foregroundColor: Colors.black,
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8)),
               ),
             ),
           ],
