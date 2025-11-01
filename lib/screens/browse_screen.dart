@@ -1,14 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class BrowseScreen extends StatelessWidget {
+class BrowseScreen extends StatefulWidget {
   const BrowseScreen({super.key});
+
+  @override
+  State<BrowseScreen> createState() => _BrowseScreenState();
+}
+
+class _BrowseScreenState extends State<BrowseScreen> {
+  bool _isGridView = true;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: _buildAppBar(), // No leading arrow
+      appBar: _buildAppBar(),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 32),
         child: Column(
@@ -16,7 +23,7 @@ class BrowseScreen extends StatelessWidget {
           children: [
             _buildHeroSection(),
             const SizedBox(height: 32),
-            _buildCategoriesGrid(context),
+            _isGridView ? _buildGridView(context) : _buildListView(context),
             const SizedBox(height: 80),
           ],
         ),
@@ -29,7 +36,7 @@ class BrowseScreen extends StatelessWidget {
       backgroundColor: Colors.white,
       elevation: 0,
       toolbarHeight: 80,
-      automaticallyImplyLeading: false, // REMOVES BACK ARROW
+      automaticallyImplyLeading: false,
       leadingWidth: 300,
       title: Row(
         children: [
@@ -136,141 +143,164 @@ class BrowseScreen extends StatelessWidget {
             ),
           ],
         ),
-        // Grid/List Toggle Icons
         Row(
           children: [
-            _toggleIcon(icon: Icons.grid_view, isActive: true),
+            _toggleButton(
+              icon: Icons.grid_view,
+              isActive: _isGridView,
+              onTap: () => setState(() => _isGridView = true),
+            ),
             const SizedBox(width: 8),
-            _toggleIcon(icon: Icons.view_list, isActive: false),
+            _toggleButton(
+              icon: Icons.view_list,
+              isActive: !_isGridView,
+              onTap: () => setState(() => _isGridView = false),
+            ),
           ],
         ),
       ],
     );
   }
 
-  Widget _toggleIcon({required IconData icon, required bool isActive}) {
-    return Container(
-      padding: const EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        color: isActive ? const Color(0xFFFFF3E0) : Colors.transparent,
-        borderRadius: BorderRadius.circular(8),
+  Widget _toggleButton({
+    required IconData icon,
+    required bool isActive,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: isActive ? const Color(0xFFFFF3E0) : Colors.transparent,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Icon(icon, size: 20, color: const Color(0xFFFF8A65)),
       ),
-      child: Icon(icon, size: 20, color: const Color(0xFFFF8A65)),
     );
   }
 
-  Widget _buildCategoriesGrid(BuildContext context) {
+  Widget _buildGridView(BuildContext context) {
     return Wrap(
       spacing: 24,
       runSpacing: 32,
-      children: [
-        _categoryCard(
-          context: context,
-          title: 'Nature',
-          subtitle: 'Mountains, forest and landscapes',
-          count: 3,
-          imagePath: 'assets/images/nature.png',
-        ),
-        _categoryCard(
-          context: context,
-          title: 'Abstract',
-          subtitle: 'Modern Geometric and artistic designs',
-          count: 4,
-          imagePath: 'assets/images/abstract.png',
-        ),
-        _categoryCard(
-          context: context,
-          title: 'Urban',
-          subtitle: 'Cities, architecture and street',
-          count: 6,
-          imagePath: 'assets/images/urban.png',
-        ),
-        _categoryCard(
-          context: context,
-          title: 'Space',
-          subtitle: 'Cosmos, planets, and galaxies',
-          count: 3,
-          imagePath: 'assets/images/space.png',
-        ),
-        _categoryCard(
-          context: context,
-          title: 'Minimalist',
-          subtitle: 'Clean, simple, and elegant',
-          count: 6,
-          imagePath: 'assets/images/minimalist.png',
-        ),
-        _categoryCard(
-          context: context,
-          title: 'Animals',
-          subtitle: 'Wildlife and nature photography',
-          count: 4,
-          imagePath: 'assets/images/animals.png',
-        ),
-      ],
+      children: _buildCategoryCards(context),
     );
   }
 
-  Widget _categoryCard({
-    required BuildContext context,
-    required String title,
-    required String subtitle,
-    required int count,
-    required String imagePath,
-  }) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.pushNamed(context, '/category', arguments: title);
-      },
-      child: Container(
-        width: 320,
-        height: 200,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
-          image: DecorationImage(
-            image: AssetImage(imagePath),
-            fit: BoxFit.cover,
-          ),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                style: GoogleFonts.inter(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                subtitle,
-                style: GoogleFonts.inter(
-                    fontSize: 14,
-                    color: Colors.white.withOpacity(0.9)),
-              ),
-              const SizedBox(height: 12),
-              Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.3),
-                  borderRadius: BorderRadius.circular(20),
+  Widget _buildListView(BuildContext context) {
+    return Column(
+      children: _buildCategoryCards(context).map((card) {
+        final data = card.key as _CategoryData;
+        return GestureDetector(
+          onTap: () => Navigator.pushNamed(context, '/category', arguments: data.title),
+          child: Container(
+            margin: const EdgeInsets.only(bottom: 24),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(16),
+                  child: Image.asset(
+                    data.imagePath,
+                    width: 120,
+                    height: 80,
+                    fit: BoxFit.cover,
+                  ),
                 ),
-                child: Text(
-                  '$count wallpapers',
-                  style: GoogleFonts.inter(
-                      fontSize: 12,
-                      color: Colors.white,
-                      fontWeight: FontWeight.w500),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        data.title,
+                        style: GoogleFonts.inter(fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        data.subtitle,
+                        style: GoogleFonts.inter(fontSize: 14, color: const Color(0xFF616161)),
+                      ),
+                      const SizedBox(height: 8),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFF0F0F0),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Text(
+                          '${data.count} wallpapers',
+                          style: GoogleFonts.inter(fontSize: 12, color: const Color(0xFF757575)),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-      ),
+        );
+      }).toList(),
     );
   }
+
+  List<GestureDetector> _buildCategoryCards(BuildContext context) {
+    final categories = [
+      _CategoryData('Nature', 'Mountains, forest and landscapes', 3, 'assets/images/nature.png'),
+      _CategoryData('Abstract', 'Modern Geometric and artistic designs', 4, 'assets/images/abstract.png'),
+      _CategoryData('Urban', 'Cities, architecture and street', 6, 'assets/images/urban.png'),
+      _CategoryData('Space', 'Cosmos, planets, and galaxies', 3, 'assets/images/space.png'),
+      _CategoryData('Minimalist', 'Clean, simple, and elegant', 6, 'assets/images/minimalist.png'),
+      _CategoryData('Animals', 'Wildlife and nature photography', 4, 'assets/images/animals.png'),
+    ];
+
+    return categories.map((data) {
+      return GestureDetector(
+        key: ValueKey(data),
+        onTap: () => Navigator.pushNamed(context, '/category', arguments: data.title),
+        child: Container(
+          width: 320,
+          height: 200,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            image: DecorationImage(
+              image: AssetImage(data.imagePath),
+              fit: BoxFit.cover,
+            ),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(data.title, style: GoogleFonts.inter(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)),
+                const SizedBox(height: 4),
+                Text(data.subtitle, style: GoogleFonts.inter(fontSize: 14, color: Colors.white.withOpacity(0.9))),
+                const SizedBox(height: 12),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.3),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Text(
+                    '${data.count} wallpapers',
+                    style: GoogleFonts.inter(fontSize: 12, color: Colors.white, fontWeight: FontWeight.w500),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }).toList();
+  }
+}
+
+class _CategoryData {
+  final String title, subtitle, imagePath;
+  final int count;
+  _CategoryData(this.title, this.subtitle, this.count, this.imagePath);
 }

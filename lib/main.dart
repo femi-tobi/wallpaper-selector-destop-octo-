@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'screens/home_screen.dart';
 import 'screens/category_screen.dart';
-import 'screens/browse_screen.dart';   // ADD THIS
+import 'screens/browse_screen.dart'; // ONLY ONE
 
 void main() {
   runApp(const WallpaperStudioApp());
@@ -28,7 +28,7 @@ class WallpaperStudioApp extends StatelessWidget {
           final category = (arg is String) ? arg : 'Nature';
           return CategoryScreen(category: category);
         },
-        '/browse': (context) => const BrowseScreen(), // FIXED: const
+        '/browse': (context) => const BrowseScreen(),
       },
     );
   }

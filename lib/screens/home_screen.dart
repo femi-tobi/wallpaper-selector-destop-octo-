@@ -1,31 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class BrowseScreen extends StatefulWidget {
-  const BrowseScreen({super.key});
-
-  @override
-  State<BrowseScreen> createState() => _BrowseScreenState();
-}
-
-class _BrowseScreenState extends State<BrowseScreen> {
-  bool _isGridView = true; // Start with Grid (default)
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: _buildAppBar(),
+      appBar: _buildAppBar(context),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 32),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildHeroSection(),
-            const SizedBox(height: 32),
-            _isGridView
-                ? _buildGridView(context)
-                : _buildListView(context),
+            const SizedBox(height: 48),
+            _buildCategoriesSection(context),
             const SizedBox(height: 80),
           ],
         ),
@@ -33,12 +24,11 @@ class _BrowseScreenState extends State<BrowseScreen> {
     );
   }
 
-  PreferredSizeWidget _buildAppBar() {
+  PreferredSizeWidget _buildAppBar(BuildContext context) {
     return AppBar(
       backgroundColor: Colors.white,
       elevation: 0,
       toolbarHeight: 80,
-      automaticallyImplyLeading: false,
       leadingWidth: 300,
       title: Row(
         children: [
@@ -60,9 +50,12 @@ class _BrowseScreenState extends State<BrowseScreen> {
         ],
       ),
       actions: [
-        _navIconItem(icon: Icons.home, label: 'Home'),
+        _navPillItem(icon: Icons.home, label: 'Home', isActive: true),
         const SizedBox(width: 24),
-        _navPillItem(icon: Icons.grid_view, label: 'Browse', isActive: true),
+        GestureDetector(
+          onTap: () => Navigator.pushNamed(context, '/browse'),
+          child: _navPillItem(icon: Icons.grid_view, label: 'Browse', isActive: false),
+        ),
         const SizedBox(width: 24),
         _navIconItem(icon: Icons.favorite_border, label: 'Favourites'),
         const SizedBox(width: 24),
@@ -80,7 +73,7 @@ class _BrowseScreenState extends State<BrowseScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       decoration: BoxDecoration(
-        color: const Color(0xFFF5F5F5),
+        color: isActive ? const Color(0xFFF5F5F5) : Colors.transparent,
         borderRadius: BorderRadius.circular(10),
         border: Border.all(color: const Color(0xFFE0E0E0), width: 1),
       ),
@@ -118,212 +111,121 @@ class _BrowseScreenState extends State<BrowseScreen> {
   }
 
   Widget _buildHeroSection() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        Text(
+          'Discover Beautiful Wallpapers',
+          style: GoogleFonts.inter(
+            fontSize: 48,
+            fontWeight: FontWeight.bold,
+            height: 1.1,
+            letterSpacing: -0.5,
+            foreground: Paint()
+              ..shader = const LinearGradient(
+                colors: [Color(0xFFFFD54F), Color(0xFFE91E63)],
+              ).createShader(const Rect.fromLTWH(0, 0, 600, 70)),
+          ),
+        ),
+        const SizedBox(height: 16),
+        Text(
+          'Discover curated collections of stunning wallpapers. Browse by\ncategory, preview in full-screen, and set your favorites.',
+          style: GoogleFonts.inter(fontSize: 16, color: const Color(0xFF616161), height: 1.6),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildCategoriesSection(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              'Browse Categories',
-              style: GoogleFonts.inter(
-                fontSize: 48,
-                fontWeight: FontWeight.bold,
-                height: 1.1,
-                foreground: Paint()
-                  ..shader = const LinearGradient(
-                    colors: [Color(0xFFFFD54F), Color(0xFFE91E63)],
-                  ).createShader(const Rect.fromLTWH(0, 0, 600, 70)),
-              ),
+              'Categories',
+              style: GoogleFonts.inter(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.black),
             ),
-            const SizedBox(height: 8),
-            Text(
-              'Explore our curated collections of stunning wallpapers',
-              style: GoogleFonts.inter(
-                  fontSize: 16, color: const Color(0xFF616161)),
+            TextButton(
+              onPressed: () => Navigator.pushNamed(context, '/browse'),
+              style: TextButton.styleFrom(
+                padding: EdgeInsets.zero,
+                minimumSize: Size.zero,
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              ),
+              child: Text(
+                'See All',
+                style: GoogleFonts.inter(fontSize: 16, color: const Color(0xFF757575)),
+              ),
             ),
           ],
         ),
-        // Toggle Buttons
-        Row(
+        const SizedBox(height: 24),
+        Wrap(
+          spacing: 24,
+          runSpacing: 32,
           children: [
-            _toggleButton(
-              icon: Icons.grid_view,
-              isActive: _isGridView,
-              onTap: () => setState(() => _isGridView = true),
-            ),
-            const SizedBox(width: 8),
-            _toggleButton(
-              icon: Icons.view_list,
-              isActive: !_isGridView,
-              onTap: () => setState(() => _isGridView = false),
-            ),
+            _categoryCard(context: context, title: 'Nature', subtitle: 'Mountains, forest and landscapes', count: 3, imagePath: 'assets/images/nature.png'),
+            _categoryCard(context: context, title: 'Abstract', subtitle: 'Modern Geometric and artistic designs', count: 4, imagePath: 'assets/images/abstract.png'),
+            _categoryCard(context: context, title: 'Urban', subtitle: 'Cities, architecture and street', count: 6, imagePath: 'assets/images/urban.png'),
+            _categoryCard(context: context, title: 'Space', subtitle: 'Cosmos, planets, and galaxies', count: 3, imagePath: 'assets/images/space.png'),
+            _categoryCard(context: context, title: 'Minimalist', subtitle: 'Clean, simple, and elegant', count: 6, imagePath: 'assets/images/minimalist.png'),
+            _categoryCard(context: context, title: 'Animals', subtitle: 'Wildlife and nature photography', count: 4, imagePath: 'assets/images/animals.png'),
           ],
         ),
       ],
     );
   }
 
-  Widget _toggleButton({
-    required IconData icon,
-    required bool isActive,
-    required VoidCallback onTap,
+  Widget _categoryCard({
+    required BuildContext context,
+    required String title,
+    required String subtitle,
+    required int count,
+    required String imagePath,
   }) {
     return GestureDetector(
-      onTap: onTap,
+      onTap: () => Navigator.pushNamed(context, '/category', arguments: title),
       child: Container(
-        padding: const EdgeInsets.all(8),
+        width: 320,
+        height: 200,
         decoration: BoxDecoration(
-          color: isActive ? const Color(0xFFFFF3E0) : Colors.transparent,
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(20),
+          image: DecorationImage(
+            image: AssetImage(imagePath),
+            fit: BoxFit.cover,
+          ),
         ),
-        child: Icon(icon, size: 20, color: const Color(0xFFFF8A65)),
-      ),
-    );
-  }
-
-  // GRID VIEW
-  Widget _buildGridView(BuildContext context) {
-    return Wrap(
-      spacing: 24,
-      runSpacing: 32,
-      children: _categoryCards(context),
-    );
-  }
-
-  // LIST VIEW – EXACT MATCH TO IMAGE
-  Widget _buildListView(BuildContext context) {
-    return Column(
-      children: _categoryCards(context).map((card) {
-        return Padding(
-          padding: const EdgeInsets.only(bottom: 24),
-          child: Row(
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Image
-              ClipRRect(
-                borderRadius: BorderRadius.circular(16),
-                child: Image.asset(
-                  (card.key as ValueKey<String>).value, // imagePath
-                  width: 120,
-                  height: 80,
-                  fit: BoxFit.cover,
-                ),
+              Text(
+                title,
+                style: GoogleFonts.inter(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
               ),
-              const SizedBox(width: 16),
-              // Text
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      card.child!.title,
-                      style: GoogleFonts.inter(
-                          fontSize: 18, fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      card.child!.subtitle,
-                      style: GoogleFonts.inter(
-                          fontSize: 14, color: const Color(0xFF616161)),
-                    ),
-                    const SizedBox(height: 8),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 6),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFF0F0F0),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Text(
-                        '${card.child!.count} wallpapers',
-                        style: GoogleFonts.inter(
-                            fontSize: 12, color: const Color(0xFF757575)),
-                      ),
-                    ),
-                  ],
+              const SizedBox(height: 4),
+              Text(
+                subtitle,
+                style: GoogleFonts.inter(fontSize: 14, color: Colors.white.withOpacity(0.9)),
+              ),
+              const SizedBox(height: 12),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.3),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Text(
+                  '$count wallpapers',
+                  style: GoogleFonts.inter(fontSize: 12, color: Colors.white, fontWeight: FontWeight.w500),
                 ),
               ),
             ],
           ),
-        );
-      }).toList(),
-    );
-  }
-
-  // Shared Category Data
-  List<GestureDetector> _categoryCards(BuildContext context) {
-    final categories = [
-      _CategoryData('Nature', 'Mountains, forest and landscapes', 3, 'assets/images/nature.png'),
-      _CategoryData('Abstract', 'Modern Geometric and artistic designs', 4, 'assets/images/abstract.png'),
-      _CategoryData('Urban', 'Cities, architecture and street', 6, 'assets/images/urban.png'),
-      _CategoryData('Space', 'Cosmos, planets, and galaxies', 3, 'assets/images/space.png'),
-      _CategoryData('Minimalist', 'Clean, simple, and elegant', 6, 'assets/images/minimalist.png'),
-      _CategoryData('Animals', 'Wildlife and nature photography', 4, 'assets/images/animals.png'),
-    ];
-
-    return categories.map((data) {
-      return GestureDetector(
-        key: ValueKey(data.imagePath),
-        onTap: () => Navigator.pushNamed(context, '/category', arguments: data.title),
-        child: _CategoryCard(
-          title: data.title,
-          subtitle: data.subtitle,
-          count: data.count,
-          imagePath: data.imagePath,
-        ),
-      );
-    }).toList();
-  }
-}
-
-// Helper Classes
-class _CategoryData {
-  final String title, subtitle, imagePath;
-  final int count;
-  _CategoryData(this.title, this.subtitle, this.count, this.imagePath);
-}
-
-class _CategoryCard extends StatelessWidget {
-  final String title, subtitle, imagePath;
-  final int count;
-  const _CategoryCard({required this.title, required this.subtitle, required this.count, required this.imagePath});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 320,
-      height: 200,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        image: DecorationImage(
-          image: AssetImage(imagePath),
-          fit: BoxFit.cover,
-        ),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(title, style: GoogleFonts.inter(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)),
-            const SizedBox(height: 4),
-            Text(subtitle, style: GoogleFonts.inter(fontSize: 14, color: Colors.white.withOpacity(0.9))),
-            const SizedBox(height: 12),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.3),
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Text(
-                '$count wallpapers',
-                style: GoogleFonts.inter(fontSize: 12, color: Colors.white, fontWeight: FontWeight.w500),
-              ),
-            ),
-          ],
         ),
       ),
     );
