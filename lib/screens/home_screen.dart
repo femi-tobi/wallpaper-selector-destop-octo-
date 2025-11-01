@@ -16,7 +16,8 @@ class HomeScreen extends StatelessWidget {
           children: [
             _buildHeroSection(),
             const SizedBox(height: 48),
-            _buildCategoriesSection(),
+            _buildCategoriesSection(context),
+            const SizedBox(height: 80),
           ],
         ),
       ),
@@ -27,10 +28,12 @@ class HomeScreen extends StatelessWidget {
     return AppBar(
       backgroundColor: Colors.white,
       elevation: 0,
+      toolbarHeight: 80,
+      leadingWidth: 300,
       title: Row(
         children: [
           Image.asset(
-            'assets/logo.png', // You'll need to add this logo
+            'assets/logo.png',
             width: 24,
             height: 24,
             color: const Color(0xFFE91E63),
@@ -47,26 +50,60 @@ class HomeScreen extends StatelessWidget {
         ],
       ),
       actions: [
-        _navItem('Home', isActive: true),
-        _navItem('Browse'),
-        _navItem('Favourites'),
-        _navItem('Settings'),
+        _navPillItem(icon: Icons.home, label: 'Home', isActive: true),
+        const SizedBox(width: 24),
+        _navIconItem(icon: Icons.grid_view, label: 'Browse'),
+        const SizedBox(width: 24),
+        _navIconItem(icon: Icons.favorite_border, label: 'Favourites'),
+        const SizedBox(width: 24),
+        _navIconItem(icon: Icons.settings, label: 'Settings'),
         const SizedBox(width: 40),
       ],
     );
   }
 
-  Widget _navItem(String text, {bool isActive = false}) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Text(
-        text,
-        style: GoogleFonts.inter(
-          fontSize: 14,
-          fontWeight: isActive ? FontWeight.w600 : FontWeight.w400,
-          color: isActive ? Colors.black : const Color(0xFF757575),
-        ),
+  Widget _navPillItem({
+    required IconData icon,
+    required String label,
+    required bool isActive,
+  }) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF5F5F5),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: const Color(0xFFE0E0E0), width: 1),
       ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 16, color: Colors.black87),
+          const SizedBox(width: 6),
+          Text(
+            label,
+            style: GoogleFonts.inter(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: Colors.black87),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _navIconItem({required IconData icon, required String label}) {
+    return Row(
+      children: [
+        Icon(icon, size: 18, color: const Color(0xFF757575)),
+        const SizedBox(width: 6),
+        Text(
+          label,
+          style: GoogleFonts.inter(
+              fontSize: 14,
+              fontWeight: FontWeight.w400,
+              color: const Color(0xFF757575)),
+        ),
+      ],
     );
   }
 
@@ -84,23 +121,21 @@ class HomeScreen extends StatelessWidget {
             foreground: Paint()
               ..shader = const LinearGradient(
                 colors: [Color(0xFFFFD54F), Color(0xFFE91E63)],
-              ).createShader(const Rect.fromLTWH(0, 0, 300, 70)),
+              ).createShader(const Rect.fromLTWH(0, 0, 600, 70)),
           ),
         ),
         const SizedBox(height: 16),
         Text(
-          'Discover curated collections of stunning wallpapers. Browse by\ncategory, preview in full-screen, and set your favorites.',
+          'Discover curated collections of stunning wallpapers. Browse by\n'
+          'category, preview in full-screen, and set your favorites.',
           style: GoogleFonts.inter(
-            fontSize: 16,
-            color: const Color(0xFF616161),
-            height: 1.6,
-          ),
+              fontSize: 16, color: const Color(0xFF616161), height: 1.6),
         ),
       ],
     );
   }
 
-  Widget _buildCategoriesSection() {
+  Widget _buildCategoriesSection(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -110,20 +145,21 @@ class HomeScreen extends StatelessWidget {
             Text(
               'Categories',
               style: GoogleFonts.inter(
-                fontSize: 28,
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
-              ),
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black),
             ),
             TextButton(
               onPressed: () {},
+              style: TextButton.styleFrom(
+                padding: EdgeInsets.zero,
+                minimumSize: Size.zero,
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              ),
               child: Text(
                 'See All',
                 style: GoogleFonts.inter(
-                  fontSize: 16,
-                  color: const Color(0xFF757575),
-                  decoration: TextDecoration.underline,
-                ),
+                    fontSize: 16, color: const Color(0xFF757575)),
               ),
             ),
           ],
@@ -134,58 +170,46 @@ class HomeScreen extends StatelessWidget {
           runSpacing: 32,
           children: [
             _categoryCard(
+              context: context,
               title: 'Nature',
               subtitle: 'Mountains, forest and landscapes',
               count: 3,
-              image: 'https://picsum.photos/seed/nature/600/400',
-              gradient: const LinearGradient(
-                colors: [Color(0xFF4CAF50), Color(0xFF8BC34A)],
-              ),
+              imagePath: 'assets/images/nature.png',
             ),
             _categoryCard(
+              context: context,
               title: 'Abstract',
               subtitle: 'Modern Geometric and artistic designs',
               count: 4,
-              image: 'https://picsum.photos/seed/abstract/600/400',
-              gradient: const LinearGradient(
-                colors: [Color(0xFF9C27B0), Color(0xFFE91E63)],
-              ),
+              imagePath: 'assets/images/abstract.png',
             ),
             _categoryCard(
+              context: context,
               title: 'Urban',
               subtitle: 'Cities, architecture and street',
               count: 6,
-              image: 'https://picsum.photos/seed/urban/600/400',
-              gradient: const LinearGradient(
-                colors: [Color(0xFF607D8B), Color(0xFF455A64)],
-              ),
+              imagePath: 'assets/images/urban.png',
             ),
             _categoryCard(
+              context: context,
               title: 'Space',
               subtitle: 'Cosmos, planets, and galaxies',
               count: 3,
-              image: 'https://picsum.photos/seed/space/600/400',
-              gradient: const LinearGradient(
-                colors: [Color(0xFF1A237E), Color(0xFF3949AB)],
-              ),
+              imagePath: 'assets/images/space.png',
             ),
             _categoryCard(
+              context: context,
               title: 'Minimalist',
               subtitle: 'Clean, simple, and elegant',
               count: 6,
-              image: 'https://picsum.photos/seed/minimal/600/400',
-              gradient: const LinearGradient(
-                colors: [Color(0xFFBCAAA4), Color(0xFF8D6E63)],
-              ),
+              imagePath: 'assets/images/minimalist.png',
             ),
             _categoryCard(
+              context: context,
               title: 'Animals',
               subtitle: 'Wildlife and nature photography',
               count: 4,
-              image: 'https://picsum.photos/seed/animals/600/400',
-              gradient: const LinearGradient(
-                colors: [Color(0xFFFF9800), Color(0xFFFF5722)],
-              ),
+              imagePath: 'assets/images/animals.png',
             ),
           ],
         ),
@@ -194,80 +218,65 @@ class HomeScreen extends StatelessWidget {
   }
 
   Widget _categoryCard({
+    required BuildContext context,
     required String title,
     required String subtitle,
     required int count,
-    required String image,
-    required Gradient gradient,
+    required String imagePath,
   }) {
-    return SizedBox(
-      width: 320,
-      height: 200,
-      child: Stack(
-        children: [
-          // Background Image
-          Positioned.fill(
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(20),
-              child: Image.network(
-                image,
-                fit: BoxFit.cover,
-                color: const Color(0x80000000),
-                colorBlendMode: BlendMode.darken,
-              ),
-            ),
+    return GestureDetector(
+      onTap: () {
+        Navigator.pushNamed(context, '/category', arguments: title);
+      },
+      child: Container(
+        width: 320,
+        height: 200,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          image: DecorationImage(
+            image: AssetImage(imagePath),
+            fit: BoxFit.cover,
           ),
-          // Gradient Overlay
-          Positioned.fill(
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                gradient: gradient,
-              ),
-            ),
-          ),
-          // Content
-          Padding(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: GoogleFonts.inter(
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: GoogleFonts.inter(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  subtitle,
-                  style: GoogleFonts.inter(
+                    color: Colors.white),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                subtitle,
+                style: GoogleFonts.inter(
                     fontSize: 14,
-                    color: Colors.white.withOpacity(0.9),
-                  ),
+                    color: Colors.white.withOpacity(0.9)),
+              ),
+              const SizedBox(height: 12),
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.3),
+                  borderRadius: BorderRadius.circular(20),
                 ),
-                const Spacer(),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.3),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Text(
-                    '$count wallpapers',
-                    style: GoogleFonts.inter(
+                child: Text(
+                  '$count wallpapers',
+                  style: GoogleFonts.inter(
                       fontSize: 12,
                       color: Colors.white,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
+                      fontWeight: FontWeight.w500),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }

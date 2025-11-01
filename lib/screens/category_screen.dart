@@ -1,20 +1,180 @@
 import 'package:flutter/material.dart';
-import '../widgets/wallpaper_grid.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class CategoryScreen extends StatelessWidget {
-  const CategoryScreen({super.key});
+  final String category;
+  const CategoryScreen({super.key, required this.category});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Row(
+      backgroundColor: Colors.white,
+      appBar: _buildAppBar(context),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 32),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildActiveWallpaperSection(),
+            const SizedBox(height: 48),
+            _buildWallpaperGrid(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  PreferredSizeWidget _buildAppBar(BuildContext context) {
+    return AppBar(
+      backgroundColor: Colors.white,
+      elevation: 0,
+      toolbarHeight: 80,
+      leading: IconButton(
+        icon: const Icon(Icons.arrow_back, color: Colors.black),
+        onPressed: () => Navigator.pop(context),
+      ),
+      title: Row(
         children: [
-          const _Sidebar(currentRoute: '/category'),
-          Expanded(
+          Image.asset(
+            'assets/logo.png',
+            width: 24,
+            height: 24,
+            color: const Color(0xFFE91E63),
+          ),
+          const SizedBox(width: 8),
+          Text(
+            'Wallpaper Studio',
+            style: GoogleFonts.inter(
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+                color: Colors.black),
+          ),
+        ],
+      ),
+      actions: [
+        _navPillItem(icon: Icons.home, label: 'Home', isActive: true),
+        const SizedBox(width: 24),
+        _navIconItem(icon: Icons.grid_view, label: 'Browse'),
+        const SizedBox(width: 24),
+        _navIconItem(icon: Icons.favorite_border, label: 'Favourites'),
+        const SizedBox(width: 24),
+        _navIconItem(icon: Icons.settings, label: 'Settings'),
+        const SizedBox(width: 40),
+      ],
+    );
+  }
+
+  Widget _navPillItem({
+    required IconData icon,
+    required String label,
+    required bool isActive,
+  }) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF5F5F5),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: const Color(0xFFE0E0E0), width: 1),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 16, color: Colors.black87),
+          const SizedBox(width: 6),
+          Text(
+            label,
+            style: GoogleFonts.inter(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: Colors.black87),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _navIconItem({required IconData icon, required String label}) {
+    return Row(
+      children: [
+        Icon(icon, size: 18, color: const Color(0xFF757575)),
+        const SizedBox(width: 6),
+        Text(
+          label,
+          style: GoogleFonts.inter(
+              fontSize: 14,
+              fontWeight: FontWeight.w400,
+              color: const Color(0xFF757575)),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildActiveWallpaperSection() {
+    return Container(
+      width: double.infinity,
+      height: 300,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        color: const Color(0xFFF8F9FA),
+      ),
+      child: Stack(
+        children: [
+          Positioned.fill(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(20),
+              child: Image.asset(
+                'assets/images/nature.png', // replace with dynamic later
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(24),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const _Header(title: 'Nature'), // change per category
-                const Expanded(child: WallpaperGrid()),
+                Text(
+                  'Your Active Wallpaper',
+                  style: GoogleFonts.inter(
+                      fontSize: 24,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'This wallpaper is currently set as your active background',
+                  style: GoogleFonts.inter(
+                      fontSize: 16, color: const Color(0xFF6C757D)),
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  children: [
+                    Text(
+                      'Category - $category',
+                      style: GoogleFonts.inter(
+                          fontSize: 14, color: const Color(0xFF6C757D)),
+                    ),
+                    const SizedBox(width: 24),
+                    Text(
+                      'Selection - Wallpaper 5',
+                      style: GoogleFonts.inter(
+                          fontSize: 14, color: const Color(0xFF6C757D)),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          Positioned(
+            bottom: 24,
+            right: 24,
+            child: Row(
+              children: [
+                _actionButton(icon: Icons.edit, onPressed: () {}),
+                const SizedBox(width: 12),
+                _actionButton(icon: Icons.delete_outline, onPressed: () {}),
+                const SizedBox(width: 12),
+                _actionButton(icon: Icons.settings, onPressed: () {}),
               ],
             ),
           ),
@@ -22,124 +182,99 @@ class CategoryScreen extends StatelessWidget {
       ),
     );
   }
-}
 
-// Re-use the same _Sidebar and _Header from home_screen.dart
-class _Sidebar extends StatelessWidget {
-  final String currentRoute;
-  const _Sidebar({required this.currentRoute});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 240,
-      color: const Color(0xFF1A1A1A),
-      child: Column(
-        children: [
-          const SizedBox(height: 64),
-          _SidebarItem(
-            icon: Icons.home,
-            label: 'Home',
-            route: '/',
-            isActive: currentRoute == '/',
-            onTap: () => Navigator.pushReplacementNamed(context, '/'),
-          ),
-          _SidebarItem(
-            icon: Icons.grid_on,
-            label: 'Categories',
-            route: '/category',
-            isActive: currentRoute == '/category',
-            onTap: () => Navigator.pushReplacementNamed(context, '/category'),
-          ),
-          _SidebarItem(
-            icon: Icons.favorite,
-            label: 'Favorites',
-            route: '/favorites',
-            isActive: currentRoute == '/favorites',
-            onTap: () => Navigator.pushReplacementNamed(context, '/favorites'),
-          ),
-          const Spacer(),
-          Padding(
-            padding: const EdgeInsets.all(24),
-            child: Text(
-              '© 2025 Wallpaper Selector',
-              style: TextStyle(color: Colors.grey[600], fontSize: 12),
-            ),
-          ),
-        ],
+  Widget _actionButton({
+    required IconData icon,
+    required VoidCallback onPressed,
+  }) {
+    return GestureDetector(
+      onTap: onPressed,
+      child: Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                blurRadius: 8,
+                offset: const Offset(0, 2)),
+          ],
+        ),
+        child: Icon(icon, color: const Color(0xFF6C757D), size: 20),
       ),
     );
   }
-}
 
-class _SidebarItem extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final String route;
-  final bool isActive;
-  final VoidCallback onTap;
-
-  const _SidebarItem({
-    required this.icon,
-    required this.label,
-    required this.route,
-    required this.isActive,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      leading: Icon(icon,
-          color: isActive ? const Color(0xFF00C853) : Colors.white, size: 20),
-      title: Text(label,
-          style: TextStyle(
-              color: isActive ? const Color(0xFF00C853) : Colors.white,
-              fontSize: 14)),
-      selected: isActive,
-      selectedTileColor: const Color(0xFF2A2A2A),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-      onTap: onTap,
-      contentPadding: const EdgeInsets.symmetric(horizontal: 24),
+  Widget _buildWallpaperGrid() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          category,
+          style: GoogleFonts.inter(
+              fontSize: 28,
+              fontWeight: FontWeight.bold,
+              color: Colors.black),
+        ),
+        const SizedBox(height: 24),
+        GridView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 4,
+            crossAxisSpacing: 24,
+            mainAxisSpacing: 24,
+            childAspectRatio: 320 / 200,
+          ),
+          itemCount: 12,
+          itemBuilder: (context, index) {
+            return _wallpaperCard(
+              imagePath: 'assets/images/nature.png',
+              title: 'Wallpaper ${index + 1}',
+              subtitle: 'High quality image',
+            );
+          },
+        ),
+      ],
     );
   }
-}
 
-class _Header extends StatelessWidget {
-  final String title;
-  const _Header({required this.title});
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _wallpaperCard({
+    required String imagePath,
+    required String title,
+    required String subtitle,
+  }) {
     return Container(
-      height: 64,
-      padding: const EdgeInsets.symmetric(horizontal: 32),
-      child: Row(
-        children: [
-          Text(title,
-              style:
-                  const TextStyle(fontSize: 20, fontWeight: FontWeight.w600)),
-          const Spacer(),
-          SizedBox(
-            width: 320,
-            height: 40,
-            child: TextField(
-              decoration: InputDecoration(
-                hintText: 'Search wallpapers...',
-                hintStyle:
-                    const TextStyle(color: Color(0xFFB3B3B3), fontSize: 14),
-                prefixIcon:
-                    const Icon(Icons.search, color: Color(0xFFB3B3B3), size: 18),
-                filled: true,
-                fillColor: const Color(0xFF2A2A2A),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20),
-                  borderSide: BorderSide.none,
-                ),
-              ),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        image: DecorationImage(
+          image: AssetImage(imagePath),
+          fit: BoxFit.cover,
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              title,
+              style: GoogleFonts.inter(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white),
             ),
-          ),
-        ],
+            const SizedBox(height: 4),
+            Text(
+              subtitle,
+              style: GoogleFonts.inter(
+                  fontSize: 14,
+                  color: Colors.white.withOpacity(0.9)),
+            ),
+          ],
+        ),
       ),
     );
   }
