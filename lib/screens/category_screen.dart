@@ -15,9 +15,10 @@ class CategoryScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildActiveWallpaperSection(),
+            _buildActiveWallpaperContainer(),
             const SizedBox(height: 48),
-            _buildWallpaperGrid(),
+            _buildCategoriesSection(context),
+            const SizedBox(height: 80),
           ],
         ),
       ),
@@ -109,171 +110,251 @@ class CategoryScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildActiveWallpaperSection() {
+  // ACTIVE WALLPAPER CONTAINER – EXACT MATCH
+  Widget _buildActiveWallpaperContainer() {
     return Container(
       width: double.infinity,
-      height: 300,
+      padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
+        color: Colors.white,
         borderRadius: BorderRadius.circular(20),
-        color: const Color(0xFFF8F9FA),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
-      child: Stack(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Positioned.fill(
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(20),
-              child: Image.asset(
-                'assets/images/nature.png', // replace with dynamic later
-                fit: BoxFit.cover,
-              ),
+          // LEFT: Image
+          ClipRRect(
+            borderRadius: BorderRadius.circular(20),
+            child: Image.asset(
+              'assets/images/nature.png',
+              width: 120,
+              height: 180,
+              fit: BoxFit.cover,
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(24),
+          const SizedBox(width: 24),
+
+          // MIDDLE: Text
+          Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // Gradient Title
                 Text(
                   'Your Active Wallpaper',
                   style: GoogleFonts.inter(
-                      fontSize: 24,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.black),
+                    fontSize: 24,
+                    fontWeight: FontWeight.w600,
+                    height: 1.2,
+                    foreground: Paint()
+                      ..shader = const LinearGradient(
+                        colors: [Color(0xFFFFD54F), Color(0xFFE91E63)],
+                      ).createShader(const Rect.fromLTWH(0, 0, 300, 30)),
+                  ),
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: 8),
                 Text(
                   'This wallpaper is currently set as your active background',
                   style: GoogleFonts.inter(
-                      fontSize: 16, color: const Color(0xFF6C757D)),
+                    fontSize: 16,
+                    color: const Color(0xFF6C757D),
+                  ),
                 ),
                 const SizedBox(height: 16),
-                Row(
-                  children: [
-                    Text(
-                      'Category - $category',
-                      style: GoogleFonts.inter(
-                          fontSize: 14, color: const Color(0xFF6C757D)),
-                    ),
-                    const SizedBox(width: 24),
-                    Text(
-                      'Selection - Wallpaper 5',
-                      style: GoogleFonts.inter(
-                          fontSize: 14, color: const Color(0xFF6C757D)),
-                    ),
-                  ],
+                // Category & Selection on SAME LINE
+                Text(
+                  'Category - $category    Selection - Wallpaper 5',
+                  style: GoogleFonts.inter(
+                    fontSize: 14,
+                    color: const Color(0xFF6C757D),
+                  ),
                 ),
               ],
             ),
           ),
-          Positioned(
-            bottom: 24,
-            right: 24,
-            child: Row(
-              children: [
-                _actionButton(icon: Icons.edit, onPressed: () {}),
-                const SizedBox(width: 12),
-                _actionButton(icon: Icons.delete_outline, onPressed: () {}),
-                const SizedBox(width: 12),
-                _actionButton(icon: Icons.settings, onPressed: () {}),
-              ],
-            ),
+
+          // RIGHT: Download & Settings Buttons
+          Row(
+            children: [
+              _circleButton(icon: Icons.download_outlined),
+              const SizedBox(width: 12),
+              _circleButton(icon: Icons.settings_outlined),
+            ],
           ),
         ],
       ),
     );
   }
 
-  Widget _actionButton({
-    required IconData icon,
-    required VoidCallback onPressed,
-  }) {
-    return GestureDetector(
-      onTap: onPressed,
-      child: Container(
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-          boxShadow: [
-            BoxShadow(
-                color: Colors.black.withOpacity(0.1),
-                blurRadius: 8,
-                offset: const Offset(0, 2)),
-          ],
-        ),
-        child: Icon(icon, color: const Color(0xFF6C757D), size: 20),
+  // Circle Button (White, Icon Only)
+  Widget _circleButton({required IconData icon}) {
+    return Container(
+      width: 40,
+      height: 40,
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        shape: BoxShape.circle,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black12,
+            blurRadius: 6,
+            offset: Offset(0, 2),
+          ),
+        ],
       ),
+      child: Icon(icon, size: 20, color: const Color(0xFF6C757D)),
     );
   }
 
-  Widget _buildWallpaperGrid() {
+  // CATEGORIES SECTION (Same as Home)
+  Widget _buildCategoriesSection(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          category,
-          style: GoogleFonts.inter(
-              fontSize: 28,
-              fontWeight: FontWeight.bold,
-              color: Colors.black),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'Categories',
+              style: GoogleFonts.inter(
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black),
+            ),
+            TextButton(
+              onPressed: () {},
+              style: TextButton.styleFrom(
+                padding: EdgeInsets.zero,
+                minimumSize: Size.zero,
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              ),
+              child: Text(
+                'See All',
+                style: GoogleFonts.inter(
+                    fontSize: 16, color: const Color(0xFF757575)),
+              ),
+            ),
+          ],
         ),
         const SizedBox(height: 24),
-        GridView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 4,
-            crossAxisSpacing: 24,
-            mainAxisSpacing: 24,
-            childAspectRatio: 320 / 200,
-          ),
-          itemCount: 12,
-          itemBuilder: (context, index) {
-            return _wallpaperCard(
+        Wrap(
+          spacing: 24,
+          runSpacing: 32,
+          children: [
+            _categoryCard(
+              context: context,
+              title: 'Nature',
+              subtitle: 'Mountains, forest and landscapes',
+              count: 3,
               imagePath: 'assets/images/nature.png',
-              title: 'Wallpaper ${index + 1}',
-              subtitle: 'High quality image',
-            );
-          },
+            ),
+            _categoryCard(
+              context: context,
+              title: 'Abstract',
+              subtitle: 'Modern Geometric and artistic designs',
+              count: 4,
+              imagePath: 'assets/images/abstract.png',
+            ),
+            _categoryCard(
+              context: context,
+              title: 'Urban',
+              subtitle: 'Cities, architecture and street',
+              count: 6,
+              imagePath: 'assets/images/urban.png',
+            ),
+            _categoryCard(
+              context: context,
+              title: 'Space',
+              subtitle: 'Cosmos, planets, and galaxies',
+              count: 3,
+              imagePath: 'assets/images/space.png',
+            ),
+            _categoryCard(
+              context: context,
+              title: 'Minimalist',
+              subtitle: 'Clean, simple, and elegant',
+              count: 6,
+              imagePath: 'assets/images/minimalist.png',
+            ),
+            _categoryCard(
+              context: context,
+              title: 'Animals',
+              subtitle: 'Wildlife and nature photography',
+              count: 4,
+              imagePath: 'assets/images/animals.png',
+            ),
+          ],
         ),
       ],
     );
   }
 
-  Widget _wallpaperCard({
-    required String imagePath,
+  Widget _categoryCard({
+    required BuildContext context,
     required String title,
     required String subtitle,
+    required int count,
+    required String imagePath,
   }) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        image: DecorationImage(
-          image: AssetImage(imagePath),
-          fit: BoxFit.cover,
+    return GestureDetector(
+      onTap: () {
+        Navigator.pushNamed(context, '/category', arguments: title);
+      },
+      child: Container(
+        width: 320,
+        height: 200,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          image: DecorationImage(
+            image: AssetImage(imagePath),
+            fit: BoxFit.cover,
+          ),
         ),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              title,
-              style: GoogleFonts.inter(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              subtitle,
-              style: GoogleFonts.inter(
-                  fontSize: 14,
-                  color: Colors.white.withOpacity(0.9)),
-            ),
-          ],
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: GoogleFonts.inter(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                subtitle,
+                style: GoogleFonts.inter(
+                    fontSize: 14,
+                    color: Colors.white.withOpacity(0.9)),
+              ),
+              const SizedBox(height: 12),
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.3),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Text(
+                  '$count wallpapers',
+                  style: GoogleFonts.inter(
+                      fontSize: 12,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w500),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

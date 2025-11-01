@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'screens/home_screen.dart';
 import 'screens/category_screen.dart';
+import 'screens/browse_screen.dart';   // ADD THIS
 
 void main() {
   runApp(const WallpaperStudioApp());
@@ -22,10 +23,12 @@ class WallpaperStudioApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => const HomeScreen(),
-        '/category': (context) => CategoryScreen(
-              category:
-                  ModalRoute.of(context)!.settings.arguments as String,
-            ),
+        '/category': (context) {
+          final arg = ModalRoute.of(context)!.settings.arguments;
+          final category = (arg is String) ? arg : 'Nature';
+          return CategoryScreen(category: category);
+        },
+        '/browse': (context) => const BrowseScreen(), // FIXED: const
       },
     );
   }
