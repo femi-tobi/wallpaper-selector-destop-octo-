@@ -11,6 +11,16 @@ class BrowseScreen extends StatefulWidget {
 class _BrowseScreenState extends State<BrowseScreen> {
   bool _isGridView = true;
 
+  // CENTRAL DATA – ONE SOURCE OF TRUTH
+  final List<_CategoryData> _categories = [
+    _CategoryData('Nature', 'Mountains, forest and landscapes', 3, 'assets/images/nature.png'),
+    _CategoryData('Abstract', 'Modern Geometric and artistic designs', 4, 'assets/images/abstract.png'),
+    _CategoryData('Urban', 'Cities, architecture and street', 6, 'assets/images/urban.png'),
+    _CategoryData('Space', 'Cosmos, planets, and galaxies', 3, 'assets/images/space.png'),
+    _CategoryData('Minimalist', 'Clean, simple, and elegant', 6, 'assets/images/minimalist.png'),
+    _CategoryData('Animals', 'Wildlife and nature photography', 4, 'assets/images/animals.png'),
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -180,18 +190,60 @@ class _BrowseScreenState extends State<BrowseScreen> {
     );
   }
 
+  // GRID VIEW
   Widget _buildGridView(BuildContext context) {
     return Wrap(
       spacing: 24,
       runSpacing: 32,
-      children: _buildCategoryCards(context),
+      children: _categories.map((data) {
+        return GestureDetector(
+          onTap: () => Navigator.pushNamed(context, '/category', arguments: data.title),
+          child: Container(
+            width: 320,
+            height: 200,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              image: DecorationImage(
+                image: AssetImage(data.imagePath),
+                fit: BoxFit.cover,
+              ),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(data.title,
+                      style: GoogleFonts.inter(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)),
+                  const SizedBox(height: 4),
+                  Text(data.subtitle,
+                      style: GoogleFonts.inter(fontSize: 14, color: Colors.white.withOpacity(0.9))),
+                  const SizedBox(height: 12),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.3),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Text(
+                      '${data.count} wallpapers',
+                      style: GoogleFonts.inter(fontSize: 12, color: Colors.white, fontWeight: FontWeight.w500),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      }).toList(),
     );
   }
 
+  // LIST VIEW – 100% MATCH
   Widget _buildListView(BuildContext context) {
     return Column(
-      children: _buildCategoryCards(context).map((card) {
-        final data = card.key as _CategoryData;
+      children: _categories.map((data) {
         return GestureDetector(
           onTap: () => Navigator.pushNamed(context, '/category', arguments: data.title),
           child: Container(
@@ -244,61 +296,9 @@ class _BrowseScreenState extends State<BrowseScreen> {
       }).toList(),
     );
   }
-
-  List<GestureDetector> _buildCategoryCards(BuildContext context) {
-    final categories = [
-      _CategoryData('Nature', 'Mountains, forest and landscapes', 3, 'assets/images/nature.png'),
-      _CategoryData('Abstract', 'Modern Geometric and artistic designs', 4, 'assets/images/abstract.png'),
-      _CategoryData('Urban', 'Cities, architecture and street', 6, 'assets/images/urban.png'),
-      _CategoryData('Space', 'Cosmos, planets, and galaxies', 3, 'assets/images/space.png'),
-      _CategoryData('Minimalist', 'Clean, simple, and elegant', 6, 'assets/images/minimalist.png'),
-      _CategoryData('Animals', 'Wildlife and nature photography', 4, 'assets/images/animals.png'),
-    ];
-
-    return categories.map((data) {
-      return GestureDetector(
-        key: ValueKey(data),
-        onTap: () => Navigator.pushNamed(context, '/category', arguments: data.title),
-        child: Container(
-          width: 320,
-          height: 200,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
-            image: DecorationImage(
-              image: AssetImage(data.imagePath),
-              fit: BoxFit.cover,
-            ),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(data.title, style: GoogleFonts.inter(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)),
-                const SizedBox(height: 4),
-                Text(data.subtitle, style: GoogleFonts.inter(fontSize: 14, color: Colors.white.withOpacity(0.9))),
-                const SizedBox(height: 12),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.3),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Text(
-                    '${data.count} wallpapers',
-                    style: GoogleFonts.inter(fontSize: 12, color: Colors.white, fontWeight: FontWeight.w500),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      );
-    }).toList();
-  }
 }
 
+// DATA CLASS
 class _CategoryData {
   final String title, subtitle, imagePath;
   final int count;
