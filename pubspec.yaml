@@ -69,6 +69,7 @@ flutter:
     - assets/images/minimalist.png
     - assets/images/animals.png
     - assets/images/phone_mockup.png
+    - assets/images/no_saved_wallpapers.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:

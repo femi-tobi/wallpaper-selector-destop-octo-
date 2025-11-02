@@ -57,7 +57,10 @@ class HomeScreen extends StatelessWidget {
           child: _navPillItem(icon: Icons.grid_view, label: 'Browse', isActive: false),
         ),
         const SizedBox(width: 24),
-        _navIconItem(icon: Icons.favorite_border, label: 'Favourites'),
+        GestureDetector(
+          onTap: () => Navigator.pushNamed(context, '/favourites'),
+          child: _navIconItem(icon: Icons.favorite_border, label: 'Favourites'),
+),
         const SizedBox(width: 24),
         GestureDetector(
           onTap: () => Navigator.pushNamed(context, '/settings'),

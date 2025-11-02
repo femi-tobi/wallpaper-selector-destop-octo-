@@ -1,142 +1,188 @@
 import 'package:flutter/material.dart';
-import '../widgets/wallpaper_grid.dart';
+import 'package:google_fonts/google_fonts.dart';
 
-class FavoritesScreen extends StatelessWidget {
-  const FavoritesScreen({super.key});
+class FavouritesScreen extends StatelessWidget {
+  const FavouritesScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Row(
+      backgroundColor: Colors.white,
+      appBar: _buildAppBar(),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 32),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildHeader(),
+            const SizedBox(height: 80),
+            Expanded(child: _buildEmptyState(context)),
+          ],
+        ),
+      ),
+    );
+  }
+
+  PreferredSizeWidget _buildAppBar() {
+    return AppBar(
+      backgroundColor: Colors.white,
+      elevation: 0,
+      toolbarHeight: 80,
+      automaticallyImplyLeading: false,
+      leadingWidth: 300,
+      title: Row(
         children: [
-          const _Sidebar(currentRoute: '/favorites'),
-          Expanded(
-            child: Column(
-              children: [
-                const _Header(title: 'Favorites'),
-                const Expanded(child: WallpaperGrid()),
-              ],
+          Image.asset(
+            'assets/logo.png',
+            width: 24,
+            height: 24,
+            color: const Color(0xFFE91E63),
+          ),
+          const SizedBox(width: 8),
+          Text(
+            'Wallpaper Studio',
+            style: GoogleFonts.inter(
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+              color: Colors.black,
             ),
           ),
         ],
       ),
+      actions: [
+        _navIconItem(icon: Icons.home, label: 'Home'),
+        const SizedBox(width: 24),
+        _navIconItem(icon: Icons.grid_view, label: 'Browse'),
+        const SizedBox(width: 24),
+        _navPillItem(icon: Icons.favorite, label: 'Favourites', isActive: true),
+        const SizedBox(width: 24),
+        _navIconItem(icon: Icons.settings, label: 'Settings'),
+        const SizedBox(width: 40),
+      ],
     );
   }
-}
 
-// copy-paste the same _Sidebar & _Header from category_screen.dart
-class _Sidebar extends StatelessWidget {
-  final String currentRoute;
-  const _Sidebar({required this.currentRoute});
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _navPillItem({
+    required IconData icon,
+    required String label,
+    required bool isActive,
+  }) {
     return Container(
-      width: 240,
-      color: const Color(0xFF1A1A1A),
-      child: Column(
-        children: [
-          const SizedBox(height: 64),
-          _SidebarItem(
-            icon: Icons.home,
-            label: 'Home',
-            route: '/',
-            isActive: currentRoute == '/',
-            onTap: () => Navigator.pushReplacementNamed(context, '/'),
-          ),
-          _SidebarItem(
-            icon: Icons.grid_on,
-            label: 'Categories',
-            route: '/category',
-            isActive: currentRoute == '/category',
-            onTap: () => Navigator.pushReplacementNamed(context, '/category'),
-          ),
-          _SidebarItem(
-            icon: Icons.favorite,
-            label: 'Favorites',
-            route: '/favorites',
-            isActive: currentRoute == '/favorites',
-            onTap: () => Navigator.pushReplacementNamed(context, '/favorites'),
-          ),
-          const Spacer(),
-          Padding(
-            padding: const EdgeInsets.all(24),
-            child: Text(
-              '© 2025 Wallpaper Selector',
-              style: TextStyle(color: Colors.grey[600], fontSize: 12),
-            ),
-          ),
-        ],
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF5F5F5),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: const Color(0xFFE0E0E0), width: 1),
       ),
-    );
-  }
-}
-
-class _SidebarItem extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final String route;
-  final bool isActive;
-  final VoidCallback onTap;
-
-  const _SidebarItem({
-    required this.icon,
-    required this.label,
-    required this.route,
-    required this.isActive,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      leading: Icon(icon,
-          color: isActive ? const Color(0xFF00C853) : Colors.white, size: 20),
-      title: Text(label,
-          style: TextStyle(
-              color: isActive ? const Color(0xFF00C853) : Colors.white,
-              fontSize: 14)),
-      selected: isActive,
-      selectedTileColor: const Color(0xFF2A2A2A),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-      onTap: onTap,
-      contentPadding: const EdgeInsets.symmetric(horizontal: 24),
-    );
-  }
-}
-
-class _Header extends StatelessWidget {
-  final String title;
-  const _Header({required this.title});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 64,
-      padding: const EdgeInsets.symmetric(horizontal: 32),
       child: Row(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          Text(title,
-              style:
-                  const TextStyle(fontSize: 20, fontWeight: FontWeight.w600)),
-          const Spacer(),
-          SizedBox(
-            width: 320,
-            height: 40,
-            child: TextField(
-              decoration: InputDecoration(
-                hintText: 'Search wallpapers...',
-                hintStyle:
-                    const TextStyle(color: Color(0xFFB3B3B3), fontSize: 14),
-                prefixIcon:
-                    const Icon(Icons.search, color: Color(0xFFB3B3B3), size: 18),
-                filled: true,
-                fillColor: const Color(0xFF2A2A2A),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20),
-                  borderSide: BorderSide.none,
-                ),
+          Icon(icon, size: 16, color: Colors.black87),
+          const SizedBox(width: 6),
+          Text(
+            label,
+            style: GoogleFonts.inter(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: Colors.black87),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _navIconItem({required IconData icon, required String label}) {
+    return Row(
+      children: [
+        Icon(icon, size: 18, color: const Color(0xFF757575)),
+        const SizedBox(width: 6),
+        Text(
+          label,
+          style: GoogleFonts.inter(
+              fontSize: 14,
+              fontWeight: FontWeight.w400,
+              color: const Color(0xFF757575)),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildHeader() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Saved Wallpapers',
+          style: GoogleFonts.inter(
+            fontSize: 48,
+            fontWeight: FontWeight.bold,
+            height: 1.1,
+            foreground: Paint()
+              ..shader = const LinearGradient(
+                colors: [Color(0xFFFFD54F), Color(0xFFE91E63)],
+              ).createShader(const Rect.fromLTWH(0, 0, 600, 70)),
+          ),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          'Your saved wallpapers collection',
+          style: GoogleFonts.inter(fontSize: 16, color: const Color(0xFF616161)),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildEmptyState(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          // Your Image
+          Image.asset(
+            'assets/images/no_saved_wallpapers.png',
+            width: 180,
+            height: 180,
+            fit: BoxFit.contain,
+          ),
+          const SizedBox(height: 32),
+
+          // Title
+          Text(
+            'No Saved Wallpapers',
+            style: GoogleFonts.inter(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: const Color(0xFF424242),
+            ),
+          ),
+          const SizedBox(height: 8),
+
+          // Subtitle
+          Text(
+            'Start saving your favorite wallpapers to see them here',
+            style: GoogleFonts.inter(
+              fontSize: 14,
+              color: const Color(0xFF757575),
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 24),
+
+          // Button
+          ElevatedButton(
+            onPressed: () => Navigator.pushNamed(context, '/browse'),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFFFF8A65),
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 14),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30),
               ),
+              elevation: 0,
+            ),
+            child: Text(
+              'Browse Wallpapers',
+              style: GoogleFonts.inter(fontWeight: FontWeight.w600),
             ),
           ),
         ],
