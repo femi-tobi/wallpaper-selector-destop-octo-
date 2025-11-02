@@ -40,6 +40,9 @@ class _BrowseScreenState extends State<BrowseScreen> {
     );
   }
 
+  // ==============================================================
+  // APP BAR
+  // ==============================================================
   PreferredSizeWidget _buildAppBar() {
     return AppBar(
       backgroundColor: Colors.white,
@@ -69,7 +72,7 @@ class _BrowseScreenState extends State<BrowseScreen> {
       actions: [
         _navIconItem(icon: Icons.home, label: 'Home'),
         const SizedBox(width: 24),
-        _navPillItem(icon: Icons.grid_view, label: 'Browse', isActive: true),
+        _navPillItem(icon: Icons.grid_view, label: 'Browse', isActive: true), // FIXED
         const SizedBox(width: 24),
         _navIconItem(icon: Icons.favorite_border, label: 'Favourites'),
         const SizedBox(width: 24),
@@ -79,6 +82,9 @@ class _BrowseScreenState extends State<BrowseScreen> {
     );
   }
 
+  // ==============================================================
+  // NAV PILL (Browse)
+  // ==============================================================
   Widget _navPillItem({
     required IconData icon,
     required String label,
@@ -99,15 +105,16 @@ class _BrowseScreenState extends State<BrowseScreen> {
           Text(
             label,
             style: GoogleFonts.inter(
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-                color: Colors.black87),
+                fontSize: 14, fontWeight: FontWeight.w600, color: Colors.black87),
           ),
         ],
       ),
     );
   }
 
+  // ==============================================================
+  // NAV ICON (Home, Favourites, Settings)
+  // ==============================================================
   Widget _navIconItem({required IconData icon, required String label}) {
     return Row(
       children: [
@@ -116,14 +123,15 @@ class _BrowseScreenState extends State<BrowseScreen> {
         Text(
           label,
           style: GoogleFonts.inter(
-              fontSize: 14,
-              fontWeight: FontWeight.w400,
-              color: const Color(0xFF757575)),
+              fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xFF757575)),
         ),
       ],
     );
   }
 
+  // ==============================================================
+  // HERO SECTION (Title + Toggle)
+  // ==============================================================
   Widget _buildHeroSection() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -147,8 +155,7 @@ class _BrowseScreenState extends State<BrowseScreen> {
             const SizedBox(height: 8),
             Text(
               'Explore our curated collections of stunning wallpapers',
-              style: GoogleFonts.inter(
-                  fontSize: 16, color: const Color(0xFF616161)),
+              style: GoogleFonts.inter(fontSize: 16, color: const Color(0xFF616161)),
             ),
           ],
         ),
@@ -189,55 +196,70 @@ class _BrowseScreenState extends State<BrowseScreen> {
     );
   }
 
-  // GRID VIEW – WITH SHADOW
+  // ==============================================================
+  // GRID VIEW
+  // ==============================================================
   Widget _buildGridView(BuildContext context) {
     return Wrap(
       spacing: 24,
       runSpacing: 32,
       children: _categories.map((data) {
         return GestureDetector(
-          onTap: () => Navigator.pushNamed(context, '/category', arguments: data.title),
-          child: Container(
-            width: 320,
-            height: 200,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
-              image: DecorationImage(
-                image: AssetImage(data.imagePath),
-                fit: BoxFit.cover,
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.08),
-                  blurRadius: 12,
-                  offset: const Offset(0, 4),
+          onTap: () => Navigator.pushNamed(
+            context,
+            '/browse-category', // GO TO NEW DETAILED SCREEN
+            arguments: data.title,
+          ),
+          child: MouseRegion(
+            cursor: SystemMouseCursors.click,
+            child: Container(
+              width: 320,
+              height: 200,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                image: DecorationImage(
+                  image: AssetImage(data.imagePath),
+                  fit: BoxFit.cover,
                 ),
-              ],
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(data.title,
-                      style: GoogleFonts.inter(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)),
-                  const SizedBox(height: 4),
-                  Text(data.subtitle,
-                      style: GoogleFonts.inter(fontSize: 14, color: Colors.white.withOpacity(0.9))),
-                  const SizedBox(height: 12),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.3),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Text(
-                      '${data.count} wallpapers',
-                      style: GoogleFonts.inter(fontSize: 12, color: Colors.white, fontWeight: FontWeight.w500),
-                    ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.08),
+                    blurRadius: 12,
+                    offset: const Offset(0, 4),
                   ),
                 ],
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      data.title,
+                      style: GoogleFonts.inter(
+                          fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      data.subtitle,
+                      style: GoogleFonts.inter(fontSize: 14, color: Colors.white.withOpacity(0.9)),
+                    ),
+                    const SizedBox(height: 12),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.3),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Text(
+                        '${data.count} wallpapers',
+                        style: GoogleFonts.inter(
+                            fontSize: 12, color: Colors.white, fontWeight: FontWeight.w500),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -246,12 +268,18 @@ class _BrowseScreenState extends State<BrowseScreen> {
     );
   }
 
-  // LIST VIEW – WITH SHADOW
+  // ==============================================================
+  // LIST VIEW
+  // ==============================================================
   Widget _buildListView(BuildContext context) {
     return Column(
       children: _categories.map((data) {
         return GestureDetector(
-          onTap: () => Navigator.pushNamed(context, '/category', arguments: data.title),
+          onTap: () => Navigator.pushNamed(
+            context,
+            '/browse-category',
+            arguments: data.title,
+          ),
           child: Container(
             margin: const EdgeInsets.only(bottom: 24),
             decoration: BoxDecoration(
@@ -317,6 +345,9 @@ class _BrowseScreenState extends State<BrowseScreen> {
   }
 }
 
+// ==============================================================
+// DATA MODEL
+// ==============================================================
 class _CategoryData {
   final String title, subtitle, imagePath;
   final int count;

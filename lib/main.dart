@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'screens/home_screen.dart';
-import 'screens/category_screen.dart';
 import 'screens/browse_screen.dart';
-import 'screens/settings_screen.dart';
-import 'screens/favourites_screen.dart'; // ADD THIS
+import 'screens/category_screen.dart';        // <-- old one (Home)
+import 'screens/browse_category_screen.dart'; // <-- NEW one (Browse)
 
-void main() {
-  runApp(const WallpaperStudioApp());
-}
+void main() => runApp(const WallpaperStudioApp());
 
 class WallpaperStudioApp extends StatelessWidget {
   const WallpaperStudioApp({super.key});
@@ -18,21 +15,25 @@ class WallpaperStudioApp extends StatelessWidget {
     return MaterialApp(
       title: 'Wallpaper Studio',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        fontFamily: GoogleFonts.inter().fontFamily,
-        useMaterial3: true,
-      ),
+      theme: ThemeData(fontFamily: GoogleFonts.inter().fontFamily, useMaterial3: true),
       initialRoute: '/',
       routes: {
-        '/': (context) => const HomeScreen(),
-        '/category': (context) {
-          final arg = ModalRoute.of(context)!.settings.arguments;
-          final category = (arg is String) ? arg : 'Nature';
-          return CategoryScreen(category: category);
+        '/': (c) => const HomeScreen(),
+        '/browse': (c) => const BrowseScreen(),
+
+        // ── FROM HOME ──
+        '/category': (c) {
+          final arg = ModalRoute.of(c)!.settings.arguments as String?;
+          return CategoryScreen(category: arg ?? 'Nature');
         },
-        '/browse': (context) => const BrowseScreen(),
-        '/settings': (context) => const SettingsScreen(),
-        '/favourites': (context) => const FavouritesScreen(), // ADD THIS
+
+        // ── FROM BROWSE ── (NEW)
+        '/browse-category': (c) {
+          final arg = ModalRoute.of(c)!.settings.arguments as String?;
+          return BrowseCategoryScreen(category: arg ?? 'Nature');
+        },
+
+        // …other routes (settings, favourites, etc.)
       },
     );
   }
