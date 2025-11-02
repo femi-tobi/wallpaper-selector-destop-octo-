@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'screens/home_screen.dart';
 import 'screens/category_screen.dart';
-import 'screens/browse_screen.dart'; // ONLY ONE
+import 'screens/browse_screen.dart';
+import 'screens/settings_screen.dart';
+import 'screens/favourites_screen.dart'; // ADD THIS
 
 void main() {
   runApp(const WallpaperStudioApp());
@@ -29,6 +31,8 @@ class WallpaperStudioApp extends StatelessWidget {
           return CategoryScreen(category: category);
         },
         '/browse': (context) => const BrowseScreen(),
+        '/settings': (context) => const SettingsScreen(),
+        '/favourites': (context) => const FavouritesScreen(), // ADD THIS
       },
     );
   }

@@ -11,7 +11,6 @@ class BrowseScreen extends StatefulWidget {
 class _BrowseScreenState extends State<BrowseScreen> {
   bool _isGridView = true;
 
-  // CENTRAL DATA – ONE SOURCE OF TRUTH
   final List<_CategoryData> _categories = [
     _CategoryData('Nature', 'Mountains, forest and landscapes', 3, 'assets/images/nature.png'),
     _CategoryData('Abstract', 'Modern Geometric and artistic designs', 4, 'assets/images/abstract.png'),
@@ -190,7 +189,7 @@ class _BrowseScreenState extends State<BrowseScreen> {
     );
   }
 
-  // GRID VIEW
+  // GRID VIEW – WITH SHADOW
   Widget _buildGridView(BuildContext context) {
     return Wrap(
       spacing: 24,
@@ -207,6 +206,13 @@ class _BrowseScreenState extends State<BrowseScreen> {
                 image: AssetImage(data.imagePath),
                 fit: BoxFit.cover,
               ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.08),
+                  blurRadius: 12,
+                  offset: const Offset(0, 4),
+                ),
+              ],
             ),
             child: Padding(
               padding: const EdgeInsets.all(20),
@@ -240,7 +246,7 @@ class _BrowseScreenState extends State<BrowseScreen> {
     );
   }
 
-  // LIST VIEW – 100% MATCH
+  // LIST VIEW – WITH SHADOW
   Widget _buildListView(BuildContext context) {
     return Column(
       children: _categories.map((data) {
@@ -248,11 +254,22 @@ class _BrowseScreenState extends State<BrowseScreen> {
           onTap: () => Navigator.pushNamed(context, '/category', arguments: data.title),
           child: Container(
             margin: const EdgeInsets.only(bottom: 24),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.05),
+                  blurRadius: 10,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 ClipRRect(
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: const BorderRadius.horizontal(left: Radius.circular(16)),
                   child: Image.asset(
                     data.imagePath,
                     width: 120,
@@ -260,33 +277,35 @@ class _BrowseScreenState extends State<BrowseScreen> {
                     fit: BoxFit.cover,
                   ),
                 ),
-                const SizedBox(width: 16),
                 Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        data.title,
-                        style: GoogleFonts.inter(fontSize: 18, fontWeight: FontWeight.bold),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        data.subtitle,
-                        style: GoogleFonts.inter(fontSize: 14, color: const Color(0xFF616161)),
-                      ),
-                      const SizedBox(height: 8),
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFF0F0F0),
-                          borderRadius: BorderRadius.circular(20),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          data.title,
+                          style: GoogleFonts.inter(fontSize: 18, fontWeight: FontWeight.bold),
                         ),
-                        child: Text(
-                          '${data.count} wallpapers',
-                          style: GoogleFonts.inter(fontSize: 12, color: const Color(0xFF757575)),
+                        const SizedBox(height: 4),
+                        Text(
+                          data.subtitle,
+                          style: GoogleFonts.inter(fontSize: 14, color: const Color(0xFF616161)),
                         ),
-                      ),
-                    ],
+                        const SizedBox(height: 8),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFF0F0F0),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Text(
+                            '${data.count} wallpapers',
+                            style: GoogleFonts.inter(fontSize: 12, color: const Color(0xFF757575)),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ],
@@ -298,7 +317,6 @@ class _BrowseScreenState extends State<BrowseScreen> {
   }
 }
 
-// DATA CLASS
 class _CategoryData {
   final String title, subtitle, imagePath;
   final int count;
