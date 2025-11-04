@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+// ADD THIS LINE
+import 'wallpaper_setup_screen.dart'; // NEW: Import the setup screen
+
 class BrowseCategoryScreen extends StatefulWidget {
   final String category;
   const BrowseCategoryScreen({super.key, required this.category});
@@ -51,11 +54,8 @@ class _BrowseCategoryScreenState extends State<BrowseCategoryScreen> {
             ),
             const SizedBox(width: 60),
 
-            // RIGHT – PREVIEW (IMAGE ON RIGHT, TEXT ON LEFT)
-            Expanded(
-              flex: 4,
-              child: _preview(wp),
-            ),
+            // RIGHT – PREVIEW
+            Expanded(flex: 4, child: _preview(wp)),
           ],
         ),
       ),
@@ -250,7 +250,7 @@ class _BrowseCategoryScreenState extends State<BrowseCategoryScreen> {
     );
   }
 
-  // ────────────────────── PREVIEW (IMAGE ON RIGHT, TEXT ON LEFT) ──────────────────────
+  // ────────────────────── PREVIEW (IMAGE ON RIGHT) ──────────────────────
   Widget _preview(_Wallpaper wp) {
     return Container(
       padding: const EdgeInsets.all(32),
@@ -263,28 +263,24 @@ class _BrowseCategoryScreenState extends State<BrowseCategoryScreen> {
       ),
       child: Column(
         children: [
-          // TITLE
           Text('Preview', style: GoogleFonts.inter(fontSize: 24, fontWeight: FontWeight.bold)),
           const SizedBox(height: 24),
 
-          // SIDE-BY-SIDE: TEXT (LEFT) + IMAGE (RIGHT)
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // LEFT: Name, Tags, Description
+              // LEFT: TEXT
               Expanded(
                 flex: 3,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Name
                     Text('Name', style: GoogleFonts.inter(fontSize: 14, color: const Color(0xFF757575))),
                     const SizedBox(height: 4),
                     Text(wp.name,
                         style: GoogleFonts.inter(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black)),
                     const SizedBox(height: 16),
 
-                    // Tags
                     Text('Tags', style: GoogleFonts.inter(fontSize: 14, color: const Color(0xFF757575))),
                     const SizedBox(height: 8),
                     Wrap(
@@ -304,12 +300,11 @@ class _BrowseCategoryScreenState extends State<BrowseCategoryScreen> {
                     ),
                     const SizedBox(height: 16),
 
-                    // Description
                     Text('Description',
                         style: GoogleFonts.inter(fontSize: 14, color: const Color(0xFF757575))),
                     const SizedBox(height: 4),
                     Text(
-                      'Discover the pure beauty of “${widget.category} Essence” – your gateway to authentic, nature‑inspired experiences. Let this unique collection elevate your senses and connect you with the unrefined elegance of the natural world.',
+                      'Discover the pure beauty of “${widget.category} Essence” – your gateway to authentic, nature‑inspired experiences.',
                       style: GoogleFonts.inter(fontSize: 14, color: const Color(0xFF424242)),
                     ),
                   ],
@@ -317,7 +312,7 @@ class _BrowseCategoryScreenState extends State<BrowseCategoryScreen> {
               ),
               const SizedBox(width: 24),
 
-              // RIGHT: LARGE WALLPAPER IMAGE
+              // RIGHT: IMAGE
               Expanded(
                 flex: 4,
                 child: ClipRRect(
@@ -335,7 +330,7 @@ class _BrowseCategoryScreenState extends State<BrowseCategoryScreen> {
 
           const SizedBox(height: 32),
 
-          // ICONS (Download / Share / Info)
+          // ICONS
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -344,16 +339,16 @@ class _BrowseCategoryScreenState extends State<BrowseCategoryScreen> {
               _icon(Icons.share, () {}),
               const SizedBox(width: 16),
               _icon(Icons.info_outline, () {
-                Navigator.push(
+                // FIXED: Now opens WallpaperSetupScreen
+                Navigator.pushNamed(
                   context,
-                MaterialPageRoute(
-                builder: (_) => WallpaperSetupScreen(
-                  wallpaperName: wp.name,
-                  wallpaperPath: wp.path,
-                ),
-              ),
-  );
-}),
+                  '/wallpaper-setup',
+                  arguments: {
+                    'name': wp.name,
+                    'path': wp.path,
+                  },
+                );
+              }),
             ],
           ),
           const SizedBox(height: 32),
