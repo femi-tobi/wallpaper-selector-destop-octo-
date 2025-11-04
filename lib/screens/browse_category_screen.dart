@@ -15,9 +15,9 @@ class _BrowseCategoryScreenState extends State<BrowseCategoryScreen> {
   bool _isFavorite = false;
 
   final List<_Wallpaper> _wallpapers = [
-    _Wallpaper('Nature 1', 'assets/images/nature1.jpg', ['Nature']),
+    _Wallpaper('Nature 1', 'assets/images/nature1.jpg', ['Nature', 'Ambience', 'Flowers']),
     _Wallpaper('Nature 2', 'assets/images/nature2.jpg', ['Nature', 'Landscape']),
-    _Wallpaper('Nature 3', 'assets/images/nature3.jpg', ['Nature', 'Flowers']),
+    _Wallpaper('Nature 3', 'assets/images/nature3.jpg', ['Nature', 'Autumn']),
     _Wallpaper('Nature 4', 'assets/images/nature4.jpg', ['Nature', 'Sky']),
     _Wallpaper('Nature 5', 'assets/images/nature5.jpg', ['Nature', 'Night']),
     _Wallpaper('Nature 6', 'assets/images/nature6.jpg', ['Nature', 'Water']),
@@ -43,7 +43,7 @@ class _BrowseCategoryScreenState extends State<BrowseCategoryScreen> {
                 children: [
                   _buildHeader(),
                   const SizedBox(height: 24),
-                  _buildToggle(),               // <-- NOW DEFINED
+                  _buildToggle(),
                   const SizedBox(height: 24),
                   Expanded(child: _isGrid ? _grid() : _list()),
                 ],
@@ -51,8 +51,11 @@ class _BrowseCategoryScreenState extends State<BrowseCategoryScreen> {
             ),
             const SizedBox(width: 60),
 
-            // RIGHT – PREVIEW
-            Expanded(flex: 4, child: _preview(wp)),
+            // RIGHT – PREVIEW (IMAGE ON RIGHT, TEXT ON LEFT)
+            Expanded(
+              flex: 4,
+              child: _preview(wp),
+            ),
           ],
         ),
       ),
@@ -247,7 +250,7 @@ class _BrowseCategoryScreenState extends State<BrowseCategoryScreen> {
     );
   }
 
-  // ────────────────────── PREVIEW ──────────────────────
+  // ────────────────────── PREVIEW (IMAGE ON RIGHT, TEXT ON LEFT) ──────────────────────
   Widget _preview(_Wallpaper wp) {
     return Container(
       padding: const EdgeInsets.all(32),
@@ -259,57 +262,80 @@ class _BrowseCategoryScreenState extends State<BrowseCategoryScreen> {
         ],
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // TITLE
           Text('Preview', style: GoogleFonts.inter(fontSize: 24, fontWeight: FontWeight.bold)),
           const SizedBox(height: 24),
-          Center(
-            child: Image.asset(
-              'assets/images/phone_preview.png',
-              width: 260,
-              fit: BoxFit.contain,
-            ),
+
+          // SIDE-BY-SIDE: TEXT (LEFT) + IMAGE (RIGHT)
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // LEFT: Name, Tags, Description
+              Expanded(
+                flex: 3,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Name
+                    Text('Name', style: GoogleFonts.inter(fontSize: 14, color: const Color(0xFF757575))),
+                    const SizedBox(height: 4),
+                    Text(wp.name,
+                        style: GoogleFonts.inter(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black)),
+                    const SizedBox(height: 16),
+
+                    // Tags
+                    Text('Tags', style: GoogleFonts.inter(fontSize: 14, color: const Color(0xFF757575))),
+                    const SizedBox(height: 8),
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: wp.tags
+                          .map((t) => Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFFF0F0F0),
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: Text(t,
+                                    style: GoogleFonts.inter(fontSize: 12, color: const Color(0xFF424242))),
+                              ))
+                          .toList(),
+                    ),
+                    const SizedBox(height: 16),
+
+                    // Description
+                    Text('Description',
+                        style: GoogleFonts.inter(fontSize: 14, color: const Color(0xFF757575))),
+                    const SizedBox(height: 4),
+                    Text(
+                      'Discover the pure beauty of “${widget.category} Essence” – your gateway to authentic, nature‑inspired experiences. Let this unique collection elevate your senses and connect you with the unrefined elegance of the natural world.',
+                      style: GoogleFonts.inter(fontSize: 14, color: const Color(0xFF424242)),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 24),
+
+              // RIGHT: LARGE WALLPAPER IMAGE
+              Expanded(
+                flex: 4,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: Image.asset(
+                    wp.path,
+                    width: double.infinity,
+                    height: 400,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+            ],
           ),
+
           const SizedBox(height: 32),
 
-          // Name
-          Text('Name', style: GoogleFonts.inter(fontSize: 14, color: const Color(0xFF757575))),
-          const SizedBox(height: 4),
-          Text(wp.name,
-              style: GoogleFonts.inter(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black)),
-          const SizedBox(height: 16),
-
-          // Tags
-          Text('Tags', style: GoogleFonts.inter(fontSize: 14, color: const Color(0xFF757575))),
-          const SizedBox(height: 8),
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: wp.tags
-                .map((t) => Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFF0F0F0),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Text(t,
-                          style: GoogleFonts.inter(fontSize: 12, color: const Color(0xFF424242))),
-                    ))
-                .toList(),
-          ),
-          const SizedBox(height: 16),
-
-          // Description
-          Text('Description',
-              style: GoogleFonts.inter(fontSize: 14, color: const Color(0xFF757575))),
-          const SizedBox(height: 4),
-          Text(
-            'Discover the pure beauty of “${widget.category} Essence” – your gateway to authentic, nature‑inspired experiences. Let this unique collection elevate your senses and connect you with the unrefined elegance of the natural world.',
-            style: GoogleFonts.inter(fontSize: 14, color: const Color(0xFF424242)),
-          ),
-          const SizedBox(height: 24),
-
-          // Icons
+          // ICONS (Download / Share / Info)
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -322,7 +348,7 @@ class _BrowseCategoryScreenState extends State<BrowseCategoryScreen> {
           ),
           const SizedBox(height: 32),
 
-          // Buttons
+          // BUTTONS
           Row(
             children: [
               Expanded(
