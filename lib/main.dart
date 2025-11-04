@@ -11,6 +11,7 @@ import 'screens/favourites_screen.dart';
 import 'screens/settings_screen.dart';
 import 'screens/category_screen.dart';
 import 'screens/browse_category_screen.dart';
+import 'screens/wallpaper_setup_screen.dart'; // NEW
 
 void main() {
   // --------------------------------------------------------------
@@ -20,7 +21,6 @@ void main() {
 
   // Detect if we are running on desktop (Windows/macOS/Linux)
   if (!identical(0, 0.0)) {
-    // This block only runs on desktop
     setWindowTitle('Wallpaper Studio');
     setWindowMinSize(const Size(1200, 800));
     setWindowMaxSize(Size.infinite);
@@ -48,14 +48,25 @@ class WallpaperStudioApp extends StatelessWidget {
         '/favourites': (c) => const FavouritesScreen(),
         '/settings': (c) => const SettingsScreen(),
 
+        // From Home → old category
         '/category': (c) {
           final arg = ModalRoute.of(c)!.settings.arguments as String?;
           return CategoryScreen(category: arg ?? 'Nature');
         },
 
+        // From Browse → detailed category
         '/browse-category': (c) {
           final arg = ModalRoute.of(c)!.settings.arguments as String?;
           return BrowseCategoryScreen(category: arg ?? 'Nature');
+        },
+
+        // NEW: Wallpaper Setup (from Info icon)
+        '/wallpaper-setup': (c) {
+          final args = ModalRoute.of(c)!.settings.arguments as Map<String, String>?;
+          return WallpaperSetupScreen(
+            wallpaperName: args?['name'] ?? 'Unknown Wallpaper',
+            wallpaperPath: args?['path'] ?? 'assets/images/nature1.jpg',
+          );
         },
       },
     );
