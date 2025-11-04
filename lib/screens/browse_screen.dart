@@ -24,7 +24,7 @@ class _BrowseScreenState extends State<BrowseScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: _buildAppBar(),
+      appBar: _buildAppBar(context),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 32),
         child: Column(
@@ -40,10 +40,7 @@ class _BrowseScreenState extends State<BrowseScreen> {
     );
   }
 
-  // ==============================================================
-  // APP BAR
-  // ==============================================================
-  PreferredSizeWidget _buildAppBar() {
+  PreferredSizeWidget _buildAppBar(BuildContext context) {
     return AppBar(
       backgroundColor: Colors.white,
       elevation: 0,
@@ -52,95 +49,68 @@ class _BrowseScreenState extends State<BrowseScreen> {
       leadingWidth: 300,
       title: Row(
         children: [
-          Image.asset(
-            'assets/logo.png',
-            width: 24,
-            height: 24,
-            color: const Color(0xFFE91E63),
-          ),
+          Image.asset('assets/logo.png', width: 24, height: 24, color: const Color(0xFFE91E63)),
           const SizedBox(width: 8),
-          Text(
-            'Wallpaper Studio',
-            style: GoogleFonts.inter(
-              fontSize: 18,
-              fontWeight: FontWeight.w600,
-              color: Colors.black,
-            ),
-          ),
+          Text('Wallpaper Studio',
+              style: GoogleFonts.inter(fontSize: 18, fontWeight: FontWeight.w600, color: Colors.black)),
         ],
       ),
       actions: [
-        _navPillItem(icon: Icons.home, label: 'Home', isActive: true),
+        _navItem(context, Icons.home, 'Home', '/'),
         const SizedBox(width: 24),
-        GestureDetector(
-          onTap: () => Navigator.pushNamed(context, '/browse'),
-          child: _navPillItem(icon: Icons.grid_view, label: 'Browse', isActive: false),
-        ),
+        _navPill(context, 'Browse', '/browse'),
         const SizedBox(width: 24),
-        GestureDetector(
-          onTap: () => Navigator.pushNamed(context, '/favourites'),
-          child: _navIconItem(icon: Icons.favorite_border, label: 'Favourites'),
-),
+        _navItem(context, Icons.favorite_border, 'Favourites', '/favourites'),
         const SizedBox(width: 24),
-        GestureDetector(
-          onTap: () => Navigator.pushNamed(context, '/settings'),
-          child: _navIconItem(icon: Icons.settings, label: 'Settings'),
-),
+        _navItem(context, Icons.settings, 'Settings', '/settings'),
         const SizedBox(width: 40),
       ],
     );
   }
 
-  // ==============================================================
-  // NAV PILL (Browse)
-  // ==============================================================
-  Widget _navPillItem({
-    required IconData icon,
-    required String label,
-    required bool isActive,
-  }) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-      decoration: BoxDecoration(
-        color: const Color(0xFFF5F5F5),
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: const Color(0xFFE0E0E0), width: 1),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 16, color: Colors.black87),
-          const SizedBox(width: 6),
-          Text(
-            label,
-            style: GoogleFonts.inter(
-                fontSize: 14, fontWeight: FontWeight.w600, color: Colors.black87),
-          ),
-        ],
-      ),
-    );
-  }
-
-  // ==============================================================
-  // NAV ICON (Home, Favourites, Settings)
-  // ==============================================================
-  Widget _navIconItem({required IconData icon, required String label}) {
-    return Row(
-      children: [
-        Icon(icon, size: 18, color: const Color(0xFF757575)),
-        const SizedBox(width: 6),
-        Text(
-          label,
-          style: GoogleFonts.inter(
-              fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xFF757575)),
+  Widget _navItem(BuildContext context, IconData icon, String label, String route) {
+    return GestureDetector(
+      onTap: () => Navigator.pushReplacementNamed(context, route),
+      child: MouseRegion(
+        cursor: SystemMouseCursors.click,
+        child: Row(
+          children: [
+            Icon(icon, size: 18, color: const Color(0xFF757575)),
+            const SizedBox(width: 6),
+            Text(label,
+                style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xFF757575))),
+          ],
         ),
-      ],
+      ),
     );
   }
 
-  // ==============================================================
-  // HERO SECTION (Title + Toggle)
-  // ==============================================================
+  Widget _navPill(BuildContext context, String label, String route) {
+    return GestureDetector(
+      onTap: () => Navigator.pushReplacementNamed(context, route),
+      child: MouseRegion(
+        cursor: SystemMouseCursors.click,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+          decoration: BoxDecoration(
+            color: const Color(0xFFF5F5F5),
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: const Color(0xFFE0E0E0), width: 1),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(Icons.grid_view, size: 16, color: Colors.black87),
+              const SizedBox(width: 6),
+              Text(label,
+                  style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.black87)),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget _buildHeroSection() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -205,9 +175,6 @@ class _BrowseScreenState extends State<BrowseScreen> {
     );
   }
 
-  // ==============================================================
-  // GRID VIEW
-  // ==============================================================
   Widget _buildGridView(BuildContext context) {
     return Wrap(
       spacing: 24,
@@ -216,7 +183,7 @@ class _BrowseScreenState extends State<BrowseScreen> {
         return GestureDetector(
           onTap: () => Navigator.pushNamed(
             context,
-            '/browse-category', // GO TO NEW DETAILED SCREEN
+            '/browse-category',
             arguments: data.title,
           ),
           child: MouseRegion(
@@ -277,9 +244,6 @@ class _BrowseScreenState extends State<BrowseScreen> {
     );
   }
 
-  // ==============================================================
-  // LIST VIEW
-  // ==============================================================
   Widget _buildListView(BuildContext context) {
     return Column(
       children: _categories.map((data) {
@@ -354,9 +318,6 @@ class _BrowseScreenState extends State<BrowseScreen> {
   }
 }
 
-// ==============================================================
-// DATA MODEL
-// ==============================================================
 class _CategoryData {
   final String title, subtitle, imagePath;
   final int count;

@@ -26,10 +26,9 @@ class _WallpaperSetupScreenState extends State<WallpaperSetupScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5F5),
-      appBar: _buildAppBar(),
+      appBar: _buildAppBar(context),
       body: Row(
         children: [
-          // LEFT: WHITE + DIMMED WALLPAPER + GRID
           Expanded(
             flex: 5,
             child: Stack(
@@ -108,8 +107,6 @@ class _WallpaperSetupScreenState extends State<WallpaperSetupScreen> {
               ],
             ),
           ),
-
-          // RIGHT: SETTINGS PANEL
           Expanded(
             flex: 4,
             child: Padding(
@@ -118,17 +115,12 @@ class _WallpaperSetupScreenState extends State<WallpaperSetupScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'Wallpaper Setup',
-                      style: GoogleFonts.inter(fontSize: 24, fontWeight: FontWeight.bold),
-                    ),
+                    Text('Wallpaper Setup',
+                        style: GoogleFonts.inter(fontSize: 24, fontWeight: FontWeight.bold)),
                     const SizedBox(height: 8),
-                    Text(
-                      'Configure your wallpaper settings and enable auto-rotation',
-                      style: GoogleFonts.inter(fontSize: 14, color: const Color(0xFF616161)),
-                    ),
+                    Text('Configure your wallpaper settings and enable auto-rotation',
+                        style: GoogleFonts.inter(fontSize: 14, color: const Color(0xFF616161))),
                     const SizedBox(height: 32),
-
                     _settingCard(
                       title: 'Activate Wallpaper',
                       subtitle: 'Set the selected wallpaper as your desktop background',
@@ -137,7 +129,6 @@ class _WallpaperSetupScreenState extends State<WallpaperSetupScreen> {
                       badgeColor: const Color(0xFF4CAF50),
                     ),
                     const SizedBox(height: 32),
-
                     Text('Display mode', style: GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.w600)),
                     const SizedBox(height: 12),
                     _radioOption('Fit', 'Scale to fit without cropping', 0),
@@ -145,14 +136,12 @@ class _WallpaperSetupScreenState extends State<WallpaperSetupScreen> {
                     _radioOption('Stretch', 'Stretch to fill the screen', 2),
                     _radioOption('Tile', 'Repeat the image to fill the screen', 3),
                     const SizedBox(height: 32),
-
                     _settingCard(
                       title: 'Auto - Rotation',
                       subtitle: 'Automatically change your wallpaper at regular intervals',
                       trailing: _toggleSwitch(_autoRotation, (v) => setState(() => _autoRotation = v)),
                     ),
                     const SizedBox(height: 32),
-
                     Text('Advanced Settings', style: GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.w600)),
                     const SizedBox(height: 12),
                     _settingCard(
@@ -167,7 +156,6 @@ class _WallpaperSetupScreenState extends State<WallpaperSetupScreen> {
                       trailing: _toggleSwitch(_syncAcrossDevices, (v) => setState(() => _syncAcrossDevices = v)),
                     ),
                     const SizedBox(height: 40),
-
                     Row(
                       children: [
                         Expanded(
@@ -212,8 +200,7 @@ class _WallpaperSetupScreenState extends State<WallpaperSetupScreen> {
     );
   }
 
-  // ────────────────────── APP BAR WITH FULL NAVIGATION ──────────────────────
-  PreferredSizeWidget _buildAppBar() {
+  PreferredSizeWidget _buildAppBar(BuildContext ctx) {
     return AppBar(
       backgroundColor: Colors.white,
       elevation: 0,
@@ -229,22 +216,24 @@ class _WallpaperSetupScreenState extends State<WallpaperSetupScreen> {
         ],
       ),
       actions: [
-        _navItem(Icons.home, 'Home', '/'),
+        _navItem(ctx, Icons.home, 'Home', '/'),
         const SizedBox(width: 24),
-        _navPill('Browse', '/browse'),
+        _navPill(ctx, 'Browse', '/browse'),
         const SizedBox(width: 24),
-        _navItem(Icons.favorite_border, 'Favourites', '/favourites'),
+        _navItem(ctx, Icons.favorite_border, 'Favourites', '/favourites'),
         const SizedBox(width: 24),
-        _navItem(Icons.settings, 'Settings', '/settings'),
+        _navItem(ctx, Icons.settings, 'Settings', '/settings'),
         const SizedBox(width: 40),
       ],
     );
   }
 
-  // NAV ITEM WITH ROUTE
-  Widget _navItem(IconData icon, String label, String route) {
+  Widget _navItem(BuildContext ctx, IconData icon, String label, String route) {
     return GestureDetector(
-      onTap: () => Navigator.pushReplacementNamed(context, route),
+      onTap: () {
+        final current = ModalRoute.of(ctx)?.settings.name;
+        if (current != route) Navigator.pushReplacementNamed(ctx, route);
+      },
       child: MouseRegion(
         cursor: SystemMouseCursors.click,
         child: Row(
@@ -259,10 +248,12 @@ class _WallpaperSetupScreenState extends State<WallpaperSetupScreen> {
     );
   }
 
-  // BROWSE PILL WITH ROUTE
-  Widget _navPill(String label, String route) {
+  Widget _navPill(BuildContext ctx, String label, String route) {
     return GestureDetector(
-      onTap: () => Navigator.pushReplacementNamed(context, route),
+      onTap: () {
+        final current = ModalRoute.of(ctx)?.settings.name;
+        if (current != route) Navigator.pushReplacementNamed(ctx, route);
+      },
       child: MouseRegion(
         cursor: SystemMouseCursors.click,
         child: Container(
@@ -286,7 +277,6 @@ class _WallpaperSetupScreenState extends State<WallpaperSetupScreen> {
     );
   }
 
-  // ────────────────────── HELPERS ──────────────────────
   Widget _settingCard({
     required String title,
     required String subtitle,

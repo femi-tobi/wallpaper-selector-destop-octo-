@@ -16,7 +16,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: _buildAppBar(),
+      appBar: _buildAppBar(context),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 32),
         child: Column(
@@ -31,7 +31,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
-  PreferredSizeWidget _buildAppBar() {
+  PreferredSizeWidget _buildAppBar(BuildContext context) {
     return AppBar(
       backgroundColor: Colors.white,
       elevation: 0,
@@ -40,87 +40,65 @@ class _SettingsScreenState extends State<SettingsScreen> {
       leadingWidth: 300,
       title: Row(
         children: [
-          Image.asset(
-            'assets/logo.png',
-            width: 24,
-            height: 24,
-            color: const Color(0xFFE91E63),
-          ),
+          Image.asset('assets/logo.png', width: 24, height: 24, color: const Color(0xFFE91E63)),
           const SizedBox(width: 8),
-          Text(
-            'Wallpaper Studio',
-            style: GoogleFonts.inter(
-              fontSize: 18,
-              fontWeight: FontWeight.w600,
-              color: Colors.black,
-            ),
-          ),
+          Text('Wallpaper Studio',
+              style: GoogleFonts.inter(fontSize: 18, fontWeight: FontWeight.w600, color: Colors.black)),
         ],
       ),
       actions: [
-        _navPillItem(icon: Icons.home, label: 'Home', isActive: true),
+        _navItem(context, Icons.home, 'Home', '/'),
         const SizedBox(width: 24),
-        GestureDetector(
-          onTap: () => Navigator.pushNamed(context, '/browse'),
-          child: _navPillItem(icon: Icons.grid_view, label: 'Browse', isActive: false),
-        ),
+        _navItem(context, Icons.grid_view, 'Browse', '/browse'),
         const SizedBox(width: 24),
-        GestureDetector(
-          onTap: () => Navigator.pushNamed(context, '/favourites'),
-          child: _navIconItem(icon: Icons.favorite_border, label: 'Favourites'),
-),
+        _navItem(context, Icons.favorite_border, 'Favourites', '/favourites'),
         const SizedBox(width: 24),
-        GestureDetector(
-          onTap: () => Navigator.pushNamed(context, '/settings'),
-          child: _navIconItem(icon: Icons.settings, label: 'Settings'),
-),
+        _navPill(context, 'Settings', '/settings'),
         const SizedBox(width: 40),
       ],
     );
   }
 
-  Widget _navPillItem({
-    required IconData icon,
-    required String label,
-    required bool isActive,
-  }) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-      decoration: BoxDecoration(
-        color: const Color(0xFFF5F5F5),
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: const Color(0xFFE0E0E0), width: 1),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 16, color: Colors.black87),
-          const SizedBox(width: 6),
-          Text(
-            label,
-            style: GoogleFonts.inter(
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-                color: Colors.black87),
-          ),
-        ],
+  Widget _navItem(BuildContext context, IconData icon, String label, String route) {
+    return GestureDetector(
+      onTap: () => Navigator.pushReplacementNamed(context, route),
+      child: MouseRegion(
+        cursor: SystemMouseCursors.click,
+        child: Row(
+          children: [
+            Icon(icon, size: 18, color: const Color(0xFF757575)),
+            const SizedBox(width: 6),
+            Text(label,
+                style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xFF757575))),
+          ],
+        ),
       ),
     );
   }
 
-  Widget _navIconItem({required IconData icon, required String label}) {
-    return Row(
-      children: [
-        Icon(icon, size: 18, color: const Color(0xFF757575)),
-        const SizedBox(width: 6),
-        Text(
-          label,
-          style: GoogleFonts.inter(
-              fontSize: 14,
-              fontWeight: FontWeight.w400,
-              color: const Color(0xFF757575)),
+  Widget _navPill(BuildContext context, String label, String route) {
+    return GestureDetector(
+      onTap: () => Navigator.pushReplacementNamed(context, route),
+      child: MouseRegion(
+        cursor: SystemMouseCursors.click,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+          decoration: BoxDecoration(
+            color: const Color(0xFFF5F5F5),
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: const Color(0xFFE0E0E0), width: 1),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(Icons.settings, size: 16, color: Colors.black87),
+              const SizedBox(width: 6),
+              Text(label,
+                  style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.black87)),
+            ],
+          ),
         ),
-      ],
+      ),
     );
   }
 
@@ -149,7 +127,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
-  // MAIN WHITE CARD – PHONE + FORM INSIDE
   Widget _buildMainCard() {
     return Container(
       padding: const EdgeInsets.all(40),
@@ -157,34 +134,23 @@ class _SettingsScreenState extends State<SettingsScreen> {
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 20,
-            offset: const Offset(0, 10),
-          ),
+          BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 20, offset: const Offset(0, 10)),
         ],
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // LEFT: Form
           Expanded(
             flex: 3,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'Wallpaper Setup',
-                  style: GoogleFonts.inter(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
+                Text('Wallpaper Setup',
+                    style: GoogleFonts.inter(fontSize: 20, fontWeight: FontWeight.bold)),
                 const SizedBox(height: 8),
-                Text(
-                  'Configure your wallpaper settings and enable auto-rotation',
-                  style: GoogleFonts.inter(fontSize: 14, color: const Color(0xFF616161)),
-                ),
+                Text('Configure your wallpaper settings and enable auto-rotation',
+                    style: GoogleFonts.inter(fontSize: 14, color: const Color(0xFF616161))),
                 const SizedBox(height: 32),
-
-                // Image Quality
                 _buildDropdownField(
                   label: 'Image Quality',
                   value: _imageQuality,
@@ -192,8 +158,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   onChanged: (val) => setState(() => _imageQuality = val!),
                 ),
                 const SizedBox(height: 24),
-
-                // Notification
                 _buildSwitchField(
                   label: 'Notification',
                   subtitle: 'Get notified about new wallpapers and updates',
@@ -201,8 +165,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   onChanged: (val) => setState(() => _notifications = val),
                 ),
                 const SizedBox(height: 40),
-
-                // Buttons – EXACT POSITION
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -229,17 +191,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
           ),
           const SizedBox(width: 60),
-
-          // RIGHT: Phone (inside card)
           Expanded(
             flex: 2,
             child: Align(
               alignment: Alignment.topCenter,
-              child: Image.asset(
-                'assets/images/phone_mockup.png',
-                width: 240,
-                fit: BoxFit.contain,
-              ),
+              child: Image.asset('assets/images/phone_mockup.png', width: 240, fit: BoxFit.contain),
             ),
           ),
         ],
@@ -270,9 +226,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               value: value,
               isExpanded: true,
               icon: const Icon(Icons.keyboard_arrow_down, color: Colors.black54),
-              items: items
-                  .map((e) => DropdownMenuItem(value: e, child: Text(e)))
-                  .toList(),
+              items: items.map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
               onChanged: onChanged,
             ),
           ),
