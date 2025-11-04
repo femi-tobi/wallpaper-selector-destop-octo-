@@ -343,7 +343,17 @@ class _BrowseCategoryScreenState extends State<BrowseCategoryScreen> {
               const SizedBox(width: 16),
               _icon(Icons.share, () {}),
               const SizedBox(width: 16),
-              _icon(Icons.info_outline, () {}),
+              _icon(Icons.info_outline, () {
+                Navigator.push(
+                  context,
+                MaterialPageRoute(
+                builder: (_) => WallpaperSetupScreen(
+                  wallpaperName: wp.name,
+                  wallpaperPath: wp.path,
+                ),
+              ),
+  );
+}),
             ],
           ),
           const SizedBox(height: 32),
