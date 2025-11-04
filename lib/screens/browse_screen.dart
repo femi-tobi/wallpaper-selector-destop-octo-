@@ -70,13 +70,22 @@ class _BrowseScreenState extends State<BrowseScreen> {
         ],
       ),
       actions: [
-        _navIconItem(icon: Icons.home, label: 'Home'),
+        _navPillItem(icon: Icons.home, label: 'Home', isActive: true),
         const SizedBox(width: 24),
-        _navPillItem(icon: Icons.grid_view, label: 'Browse', isActive: true), // FIXED
+        GestureDetector(
+          onTap: () => Navigator.pushNamed(context, '/browse'),
+          child: _navPillItem(icon: Icons.grid_view, label: 'Browse', isActive: false),
+        ),
         const SizedBox(width: 24),
-        _navIconItem(icon: Icons.favorite_border, label: 'Favourites'),
+        GestureDetector(
+          onTap: () => Navigator.pushNamed(context, '/favourites'),
+          child: _navIconItem(icon: Icons.favorite_border, label: 'Favourites'),
+),
         const SizedBox(width: 24),
-        _navIconItem(icon: Icons.settings, label: 'Settings'),
+        GestureDetector(
+          onTap: () => Navigator.pushNamed(context, '/settings'),
+          child: _navIconItem(icon: Icons.settings, label: 'Settings'),
+),
         const SizedBox(width: 40),
       ],
     );
