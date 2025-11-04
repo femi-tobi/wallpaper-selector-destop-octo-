@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-
-// ADD THIS LINE
-import 'wallpaper_setup_screen.dart'; // NEW: Import the setup screen
+import 'wallpaper_setup_screen.dart';
 
 class BrowseCategoryScreen extends StatefulWidget {
   final String category;
@@ -32,13 +30,12 @@ class _BrowseCategoryScreenState extends State<BrowseCategoryScreen> {
 
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: _buildAppBar(),
+      appBar: _buildAppBar(context),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 32),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // LEFT – GRID / LIST
             Expanded(
               flex: 5,
               child: Column(
@@ -53,8 +50,6 @@ class _BrowseCategoryScreenState extends State<BrowseCategoryScreen> {
               ),
             ),
             const SizedBox(width: 60),
-
-            // RIGHT – PREVIEW
             Expanded(flex: 4, child: _preview(wp)),
           ],
         ),
@@ -62,8 +57,7 @@ class _BrowseCategoryScreenState extends State<BrowseCategoryScreen> {
     );
   }
 
-  // ────────────────────── APP BAR ──────────────────────
-  PreferredSizeWidget _buildAppBar() {
+  PreferredSizeWidget _buildAppBar(BuildContext context) {
     return AppBar(
       backgroundColor: Colors.white,
       elevation: 0,
@@ -79,28 +73,61 @@ class _BrowseCategoryScreenState extends State<BrowseCategoryScreen> {
         ],
       ),
       actions: [
-        _navItem(Icons.home, 'Home'),
+        _navItem(context, Icons.home, 'Home', '/'),
         const SizedBox(width: 24),
-        _navItem(Icons.grid_view, 'Browse'),
+        _navPill(context, 'Browse', '/browse'),
         const SizedBox(width: 24),
-        _navItem(Icons.favorite_border, 'Favourites'),
+        _navItem(context, Icons.favorite_border, 'Favourites', '/favourites'),
         const SizedBox(width: 24),
-        _navItem(Icons.settings, 'Settings'),
+        _navItem(context, Icons.settings, 'Settings', '/settings'),
         const SizedBox(width: 40),
       ],
     );
   }
 
-  Widget _navItem(IconData icon, String label) => Row(
-        children: [
-          Icon(icon, size: 18, color: const Color(0xFF757575)),
-          const SizedBox(width: 6),
-          Text(label,
-              style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xFF757575))),
-        ],
-      );
+  Widget _navItem(BuildContext context, IconData icon, String label, String route) {
+    return GestureDetector(
+      onTap: () => Navigator.pushReplacementNamed(context, route),
+      child: MouseRegion(
+        cursor: SystemMouseCursors.click,
+        child: Row(
+          children: [
+            Icon(icon, size: 18, color: const Color(0xFF757575)),
+            const SizedBox(width: 6),
+            Text(label,
+                style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w400, color: const Color(0xFF757575))),
+          ],
+        ),
+      ),
+    );
+  }
 
-  // ────────────────────── HEADER + BACK ──────────────────────
+  Widget _navPill(BuildContext context, String label, String route) {
+    return GestureDetector(
+      onTap: () => Navigator.pushReplacementNamed(context, route),
+      child: MouseRegion(
+        cursor: SystemMouseCursors.click,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+          decoration: BoxDecoration(
+            color: const Color(0xFFF5F5F5),
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: const Color(0xFFE0E0E0), width: 1),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(Icons.grid_view, size: 16, color: Colors.black87),
+              const SizedBox(width: 6),
+              Text(label,
+                  style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.black87)),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget _buildHeader() {
     return Row(
       children: [
@@ -123,7 +150,6 @@ class _BrowseCategoryScreenState extends State<BrowseCategoryScreen> {
     );
   }
 
-  // ────────────────────── TOGGLE (GRID / LIST) ──────────────────────
   Widget _buildToggle() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
@@ -149,7 +175,6 @@ class _BrowseCategoryScreenState extends State<BrowseCategoryScreen> {
     );
   }
 
-  // ────────────────────── GRID ──────────────────────
   Widget _grid() {
     return GridView.builder(
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -163,7 +188,6 @@ class _BrowseCategoryScreenState extends State<BrowseCategoryScreen> {
     );
   }
 
-  // ────────────────────── LIST ──────────────────────
   Widget _list() {
     return ListView.separated(
       itemCount: _wallpapers.length,
@@ -172,7 +196,6 @@ class _BrowseCategoryScreenState extends State<BrowseCategoryScreen> {
     );
   }
 
-  // ────────────────────── SINGLE CARD ──────────────────────
   Widget _card(int i, {bool isList = false}) {
     final wp = _wallpapers[i];
     final selected = i == _selectedIndex;
@@ -250,7 +273,6 @@ class _BrowseCategoryScreenState extends State<BrowseCategoryScreen> {
     );
   }
 
-  // ────────────────────── PREVIEW (IMAGE ON RIGHT) ──────────────────────
   Widget _preview(_Wallpaper wp) {
     return Container(
       padding: const EdgeInsets.all(32),
@@ -265,11 +287,9 @@ class _BrowseCategoryScreenState extends State<BrowseCategoryScreen> {
         children: [
           Text('Preview', style: GoogleFonts.inter(fontSize: 24, fontWeight: FontWeight.bold)),
           const SizedBox(height: 24),
-
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // LEFT: TEXT
               Expanded(
                 flex: 3,
                 child: Column(
@@ -280,7 +300,6 @@ class _BrowseCategoryScreenState extends State<BrowseCategoryScreen> {
                     Text(wp.name,
                         style: GoogleFonts.inter(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black)),
                     const SizedBox(height: 16),
-
                     Text('Tags', style: GoogleFonts.inter(fontSize: 14, color: const Color(0xFF757575))),
                     const SizedBox(height: 8),
                     Wrap(
@@ -299,7 +318,6 @@ class _BrowseCategoryScreenState extends State<BrowseCategoryScreen> {
                           .toList(),
                     ),
                     const SizedBox(height: 16),
-
                     Text('Description',
                         style: GoogleFonts.inter(fontSize: 14, color: const Color(0xFF757575))),
                     const SizedBox(height: 4),
@@ -311,8 +329,6 @@ class _BrowseCategoryScreenState extends State<BrowseCategoryScreen> {
                 ),
               ),
               const SizedBox(width: 24),
-
-              // RIGHT: IMAGE
               Expanded(
                 flex: 4,
                 child: ClipRRect(
@@ -327,10 +343,7 @@ class _BrowseCategoryScreenState extends State<BrowseCategoryScreen> {
               ),
             ],
           ),
-
           const SizedBox(height: 32),
-
-          // ICONS
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -339,21 +352,15 @@ class _BrowseCategoryScreenState extends State<BrowseCategoryScreen> {
               _icon(Icons.share, () {}),
               const SizedBox(width: 16),
               _icon(Icons.info_outline, () {
-                // FIXED: Now opens WallpaperSetupScreen
                 Navigator.pushNamed(
                   context,
                   '/wallpaper-setup',
-                  arguments: {
-                    'name': wp.name,
-                    'path': wp.path,
-                  },
+                  arguments: {'name': wp.name, 'path': wp.path},
                 );
               }),
             ],
           ),
           const SizedBox(height: 32),
-
-          // BUTTONS
           Row(
             children: [
               Expanded(
@@ -410,7 +417,6 @@ class _BrowseCategoryScreenState extends State<BrowseCategoryScreen> {
   }
 }
 
-// -----------------------------------------------------------------
 class _Wallpaper {
   final String name;
   final String path;

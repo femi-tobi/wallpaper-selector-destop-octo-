@@ -8,7 +8,7 @@ class FavouritesScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: _buildAppBar(),
+      appBar: _buildAppBar(context),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 32),
         child: Column(
@@ -23,7 +23,8 @@ class FavouritesScreen extends StatelessWidget {
     );
   }
 
-  PreferredSizeWidget _buildAppBar() {
+  // ────────────────────── APP BAR WITH FULL NAVIGATION ──────────────────────
+  PreferredSizeWidget _buildAppBar(BuildContext context) {
     return AppBar(
       backgroundColor: Colors.white,
       elevation: 0,
@@ -50,63 +51,80 @@ class FavouritesScreen extends StatelessWidget {
         ],
       ),
       actions: [
-        _navIconItem(icon: Icons.home, label: 'Home'),
+        _navIconItem(context, icon: Icons.home, label: 'Home', route: '/'),
         const SizedBox(width: 24),
-        _navIconItem(icon: Icons.grid_view, label: 'Browse'),
+        _navIconItem(context, icon: Icons.grid_view, label: 'Browse', route: '/browse'),
         const SizedBox(width: 24),
-        _navPillItem(icon: Icons.favorite, label: 'Favourites', isActive: true),
+        _navPillItem(context, icon: Icons.favorite, label: 'Favourites', route: '/favourites', isActive: true),
         const SizedBox(width: 24),
-        _navIconItem(icon: Icons.settings, label: 'Settings'),
+        _navIconItem(context, icon: Icons.settings, label: 'Settings', route: '/settings'),
         const SizedBox(width: 40),
       ],
     );
   }
 
-  Widget _navPillItem({
+  // ────────────────────── NAVIGATION HELPERS ──────────────────────
+  Widget _navIconItem(BuildContext context, {required IconData icon, required String label, required String route}) {
+    return GestureDetector(
+      onTap: () => Navigator.pushReplacementNamed(context, route),
+      child: MouseRegion(
+        cursor: SystemMouseCursors.click,
+        child: Row(
+          children: [
+            Icon(icon, size: 18, color: const Color(0xFF757575)),
+            const SizedBox(width: 6),
+            Text(
+              label,
+              style: GoogleFonts.inter(
+                fontSize: 14,
+                fontWeight: FontWeight.w400,
+                color: const Color(0xFF757575),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _navPillItem(BuildContext context, {
     required IconData icon,
     required String label,
+    required String route,
     required bool isActive,
   }) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-      decoration: BoxDecoration(
-        color: const Color(0xFFF5F5F5),
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: const Color(0xFFE0E0E0), width: 1),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 16, color: Colors.black87),
-          const SizedBox(width: 6),
-          Text(
-            label,
-            style: GoogleFonts.inter(
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-                color: Colors.black87),
+    return GestureDetector(
+      onTap: () => Navigator.pushReplacementNamed(context, route),
+      child: MouseRegion(
+        cursor: SystemMouseCursors.click,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+          decoration: BoxDecoration(
+            color: const Color(0xFFF5F5F5),
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: const Color(0xFFE0E0E0), width: 1),
           ),
-        ],
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(icon, size: 16, color: Colors.black87),
+              const SizedBox(width: 6),
+              Text(
+                label,
+                style: GoogleFonts.inter(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.black87,
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
 
-  Widget _navIconItem({required IconData icon, required String label}) {
-    return Row(
-      children: [
-        Icon(icon, size: 18, color: const Color(0xFF757575)),
-        const SizedBox(width: 6),
-        Text(
-          label,
-          style: GoogleFonts.inter(
-              fontSize: 14,
-              fontWeight: FontWeight.w400,
-              color: const Color(0xFF757575)),
-        ),
-      ],
-    );
-  }
-
+  // ────────────────────── HEADER ──────────────────────
   Widget _buildHeader() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -132,12 +150,12 @@ class FavouritesScreen extends StatelessWidget {
     );
   }
 
+  // ────────────────────── EMPTY STATE ──────────────────────
   Widget _buildEmptyState(BuildContext context) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // Your Image
           Image.asset(
             'assets/images/no_saved_wallpapers.png',
             width: 180,
@@ -145,8 +163,6 @@ class FavouritesScreen extends StatelessWidget {
             fit: BoxFit.contain,
           ),
           const SizedBox(height: 32),
-
-          // Title
           Text(
             'No Saved Wallpapers',
             style: GoogleFonts.inter(
@@ -156,8 +172,6 @@ class FavouritesScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 8),
-
-          // Subtitle
           Text(
             'Start saving your favorite wallpapers to see them here',
             style: GoogleFonts.inter(
@@ -167,10 +181,8 @@ class FavouritesScreen extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 24),
-
-          // Button
           ElevatedButton(
-            onPressed: () => Navigator.pushNamed(context, '/browse'),
+            onPressed: () => Navigator.pushReplacementNamed(context, '/browse'),
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFFFF8A65),
               foregroundColor: Colors.white,
