@@ -10,20 +10,20 @@ Pixel-perfect recreation of Figma designs for desktop. Built with Flutter.
 - Responsive for desktop sizes
 
 ## Setup
-1. Clone repo: `git clone [your-repo]`
+1. Clone repo: `git clone https://github.com/femi-tobi/wallpaper-selector-destop-octo-`
 2. `flutter pub get`
 3. Desktop: `flutter run -d windows`
-4. APK: Download below
+4. EXE: Download below
 
 ## Screenshots
 <image-card alt="Home" src="screenshots/home_desktop.png" ></image-card>
 <image-card alt="Detail" src="screenshots/detail_desktop.png" ></image-card>
 
-## APK Download
-[Download APK](https://drive.google.com/file/d/1Hhk2UBPT73fOifShGrkeLqWfrmzfXUsQ/view?usp=sharing)
+## EXE Download
+[Download EXE](https://drive.google.com/file/d/1Hhk2UBPT73fOifShGrkeLqWfrmzfXUsQ/view?usp=sharing)
 
 ## Demo Video
-[Watch 3-min Walkthrough](google-drive-link)
+[Watch 3-min Walkthrough](https://drive.google.com/file/d/1W8r9S0gvdTpZkzTXUlqX26K8JO4RrKTB/view?usp=sharing)
 
 ## Figma Design
 [Figma Link](https://www.figma.com/design/WnHFPfZ7uW2vxy4sHqtb12/MOBILE-WALLPAPER-SELECTOR?node-id=1-971&t=WvQ8bYlr2vkapCwQ-0)
