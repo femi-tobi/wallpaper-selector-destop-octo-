@@ -20,12 +20,10 @@ Pixel-perfect recreation of Figma designs for desktop. Built with Flutter.
 <image-card alt="Detail" src="screenshots/detail_desktop.png" ></image-card>
 
 ## APK Download
-[Download APK](link-to-apk)
+[Download APK](https://drive.google.com/file/d/1Hhk2UBPT73fOifShGrkeLqWfrmzfXUsQ/view?usp=sharing)
 
 ## Demo Video
 [Watch 3-min Walkthrough](google-drive-link)
 
 ## Figma Design
-[Figma Link](your-figma-link)
-
-Built by Adefemi Oluwatobi# wallpaper-selector-destop-octo-
+[Figma Link](https://www.figma.com/design/WnHFPfZ7uW2vxy4sHqtb12/MOBILE-WALLPAPER-SELECTOR?node-id=1-971&t=WvQ8bYlr2vkapCwQ-0)
